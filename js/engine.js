@@ -1,6 +1,6 @@
 loader.executeModule('main',
-'B', 'canvas', 'camera', 'screenSize', 'map',
-function (B, canvas, camera, screenSize, map) {
+'B', 'canvas', 'camera', 'screenSize', 'map', 'graph',
+function (B, canvas, camera, screenSize, map, graph) {
 	"use strict";
 
 	/**
@@ -100,7 +100,8 @@ function (B, canvas, camera, screenSize, map) {
 		lastCalledTime = Date.now();
 		fpsAccu = 0;
 
-		m = map([]);
+		m = map(graph(500, 2000, 2000));
+		camera.setPosition({x: 700, y: 500});
 		mainLoop();
 	}
 

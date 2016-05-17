@@ -17,8 +17,8 @@ loader.addModule('map', 'B', function (canvas, B) {
 
 		};
 
-		map.draw = function () {
-			//map.graph.draw();
+		map.draw = function (camera) {
+			map.graph.draw(camera);
 		};
 
 		return map;
