@@ -9,11 +9,11 @@ function (canvas, B) {
 
 	var canvasContext = canvas.getContext();
 
-	function generate (graph, nbNodes) {
+	function generate (graph, nbNodes, surfaceW, surfaceH) {
 		while (nbNodes > 0) {
 			graph.nodes.push({
-				x: Math.random() * 1000,
-				y: Math.random() * 1000
+				x: Math.random() * surfaceW,
+				y: Math.random() * surfaceH
 			});
 			nbNodes--;
 		}
@@ -28,7 +28,7 @@ function (canvas, B) {
 			edges: []
 		};
 
-		generate(graph, nbNodes);
+		generate(graph, nbNodes, surfaceW, surfaceH);
 
 		graph.draw = function (camera) {
 			canvasContext.beginPath();
