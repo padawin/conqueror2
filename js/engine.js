@@ -32,6 +32,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 	 * Main draw method. Draws the sky, the map and its objects
 	 */
 	function draw () {
+		canvas.canvas.width = canvas.getWidth();
 		m.draw(camera, debug);
 	}
 
