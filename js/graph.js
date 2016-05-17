@@ -12,8 +12,8 @@ function (canvas, B) {
 	function generate (graph, nbNodes, surfaceW, surfaceH) {
 		while (nbNodes > 0) {
 			graph.nodes.push({
-				x: Math.random() * surfaceW,
-				y: Math.random() * surfaceH
+				x: Math.floor(Math.random() * surfaceW),
+				y: Math.floor(Math.random() * surfaceH)
 			});
 			nbNodes--;
 		}
