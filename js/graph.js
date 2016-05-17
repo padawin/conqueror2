@@ -17,6 +17,18 @@ function (canvas, B) {
 			});
 			nbNodes--;
 		}
+
+		graph.nodes.sort(function (a, b) {
+			if (a.x < b.x || a.x == b.x && a.y < b.y) {
+				return -1;
+			}
+			else if (a.x > b.x || a.x == b.x && a.y > b.y) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		});
 	}
 
 	/**
