@@ -1,9 +1,11 @@
 import random
 import operator
+import uuid
 
 
 class game:
 	def __init__(self):
+		self.id = uuid.uuid4()
 		self.nodes = []
 		self.edges = []
 		self.players = {}
