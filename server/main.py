@@ -48,18 +48,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					player.write_message(
 						u'%s joined' % self.id
 					)
-		elif message['messageType'] == 'CLIENT_CLOSED':
+
+	def on_close(self):
+		if self.id in clients:
 			players = games[self.gameIndex].players
 			for player in players:
 				if player.id is not self.id:
 					player.write_message(u'%s left' % self.id)
 
-			del self.gameIndex
 			del clients[self.id]
-
-	def on_close(self):
-		if self.id in clients:
-			del clients[self.id]
+			del games[self.gameIndex]
 
 app = tornado.web.Application([
 	(r'/', IndexHandler),
