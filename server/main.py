@@ -34,6 +34,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			for key in clients:
 				if key is not self.id:
 					clients[key]['object'].write_message(u'%s joined' % self.id)
+		elif message['messageType'] == 'CLIENT_CLOSED':
+			del clients[self.id]
+			for key in clients:
+				clients[key]['object'].write_message(u'%s left' % self.id)
 
 	def on_close(self):
 		if self.id in clients:
