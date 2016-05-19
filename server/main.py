@@ -4,6 +4,7 @@ import tornado.websocket
 
 import uuid
 import json
+import game
 
 from tornado.options import define, options, parse_command_line
 
@@ -11,6 +12,8 @@ define("port", default=8888, help="run on the given port", type=int)
 
 # we gonna store clients in dictionary..
 clients = dict()
+games = list()
+lastGameInserted = None
 
 class IndexHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
@@ -23,6 +26,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.stream.set_nodelay(True)
 		clients[self.id] = {"id": self.id, "object": self}
 
+		global lastGameInserted
+		if lastGameInserted == None or not games[lastGameInserted].hasFreeSlot():
+			lastGameInserted = len(games)
+			games.append(game.game())
+
+		games[lastGameInserted].addPlayer(self)
+		self.gameIndex = lastGameInserted
+
 	def on_message(self, message):
 		try:
 			message = json.loads(message)
@@ -31,13 +42,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		if message['messageType'] == 'CLIENT_JOINED':
-			for key in clients:
-				if key is not self.id:
-					clients[key]['object'].write_message(u'%s joined' % self.id)
+			players = games[self.gameIndex].players
+			for player in players:
+				if player.id is not self.id:
+					player.write_message(
+						u'%s joined' % self.id
+					)
 		elif message['messageType'] == 'CLIENT_CLOSED':
+			players = games[self.gameIndex].players
+			for player in players:
+				if player.id is not self.id:
+					player.write_message(u'%s left' % self.id)
+
+			del self.gameIndex
 			del clients[self.id]
-			for key in clients:
-				clients[key]['object'].write_message(u'%s left' % self.id)
 
 	def on_close(self):
 		if self.id in clients:
