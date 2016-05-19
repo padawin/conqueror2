@@ -3,6 +3,7 @@ import tornado.web
 import tornado.websocket
 
 import uuid
+import json
 
 from tornado.options import define, options, parse_command_line
 
@@ -23,13 +24,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		clients[self.id] = {"id": self.id, "object": self}
 
 	def on_message(self, message):
-		"""
-		when we receive some message we want some message handler..
-		for this example i will just print message to console
-		"""
-		for key in clients:
-			if key is not self.id:
-				clients[key]['object'].write_message(message)
+		try:
+			message = json.loads(message)
+		except ValueError:
+			print('invalid json: %s' % message)
+			return
+
+		if message['messageType'] == 'CLIENT_JOINED':
+			for key in clients:
+				if key is not self.id:
+					clients[key]['object'].write_message(u'%s joined' % self.id)
 
 	def on_close(self):
 		if self.id in clients:
