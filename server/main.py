@@ -12,8 +12,8 @@ define("port", default=8888, help="run on the given port", type=int)
 
 # we gonna store clients in dictionary..
 clients = dict()
-games = list()
-lastGameInserted = None
+openGames = dict()
+fullGames = dict()
 
 class IndexHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
@@ -26,13 +26,18 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.stream.set_nodelay(True)
 		clients[self.id] = {"id": self.id, "object": self}
 
-		global lastGameInserted
-		if lastGameInserted == None or not games[lastGameInserted].hasFreeSlot():
-			lastGameInserted = len(games)
-			games.append(game.game())
+		if len(openGames.keys()) > 0:
+			gameInstance = openGames[openGames.keys()[0]]
+			gameInstance.addPlayer(self)
+			fullGames[gameInstance.id] = gameInstance
+			del openGames[gameInstance.id]
 
-		games[lastGameInserted].addPlayer(self)
-		self.gameIndex = lastGameInserted
+		else:
+			gameInstance = game.game()
+			gameInstance.addPlayer(self)
+			openGames[gameInstance.id] = gameInstance
+
+		self.game = gameInstance
 
 	def on_message(self, message):
 		try:
@@ -42,7 +47,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		if message['messageType'] == 'CLIENT_JOINED':
-			players = games[self.gameIndex].players
+			players = self.game.players
 			for playerId in players.keys():
 				if players[playerId].id is not self.id:
 					players[playerId].write_message(
@@ -51,15 +56,21 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def on_close(self):
 		if self.id in clients:
-			players = games[self.gameIndex].players
+			players = self.game.players
 			for playerId in players.keys():
 				if players[playerId].id is not self.id:
 					players[playerId].write_message(u'%s left' % self.id)
 
 			del clients[self.id]
-			# have to permut the game with the last one and update the players
-			# to not have the games list to grow infinitely
-			games[self.gameIndex] = None
+			del self.game.players[self.id]
+
+			# the game still has a player, it is now open
+			if len(self.game.players.keys()) == 1:
+				openGames[self.game.id] = self.game
+				del fullGames[self.game.id]
+			# Else the game is empty, delete it
+			else:
+				del openGames[self.game.id]
 
 app = tornado.web.Application([
 	(r'/', IndexHandler),
