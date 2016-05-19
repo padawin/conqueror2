@@ -43,21 +43,23 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		if message['messageType'] == 'CLIENT_JOINED':
 			players = games[self.gameIndex].players
-			for player in players:
-				if player.id is not self.id:
-					player.write_message(
+			for playerId in players.keys():
+				if players[playerId].id is not self.id:
+					players[playerId].write_message(
 						u'%s joined' % self.id
 					)
 
 	def on_close(self):
 		if self.id in clients:
 			players = games[self.gameIndex].players
-			for player in players:
-				if player.id is not self.id:
-					player.write_message(u'%s left' % self.id)
+			for playerId in players.keys():
+				if players[playerId].id is not self.id:
+					players[playerId].write_message(u'%s left' % self.id)
 
 			del clients[self.id]
-			del games[self.gameIndex]
+			# have to permut the game with the last one and update the players
+			# to not have the games list to grow infinitely
+			games[self.gameIndex] = None
 
 app = tornado.web.Application([
 	(r'/', IndexHandler),

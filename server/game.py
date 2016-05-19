@@ -6,10 +6,10 @@ class game:
 	def __init__(self):
 		self.nodes = []
 		self.edges = []
-		self.players = []
+		self.players = {}
 
 	def addPlayer(self, player):
-		self.players.append(player)
+		self.players[player.id] = player
 
 	def hasFreeSlot(self):
 		return len(self.players) < 2
