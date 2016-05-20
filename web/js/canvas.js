@@ -42,5 +42,13 @@ loader.addModule('canvas', 'B', function (B) {
 		}
 	};
 
+	/**
+	 * Method to draw some text
+	 */
+	canvas.drawText = function (text, x, y, color) {
+		canvasContext.fillStyle = color;
+		canvasContext.fillText(text, x, y);
+	};
+
 	return canvas;
 });
