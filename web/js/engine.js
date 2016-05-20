@@ -118,9 +118,11 @@ function (B, canvas, camera, screenSize, map, graph) {
 				drawWaitScreen();
 			}
 			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
-				m.update();
-				camera.update();
-				drawGame();
+				if (m) {
+					m.update();
+					camera.update();
+					drawGame();
+				}
 			}
 		}
 	}
