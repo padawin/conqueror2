@@ -106,6 +106,13 @@ function (B, canvas, camera, screenSize, map, graph) {
 		 * Event fired when the mouse is clicked
 		 */
 		B.Events.on('click', null, function (mouseX, mouseY) {
+			if (currentState == STATES.MAIN_MENU) {
+				currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+				startGame();
+			}
+			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
+				console.log('handle play click');
+			}
 		});
 	}
 
@@ -113,6 +120,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 	 * Method executed when clicking on the main menu
 	 */
 	function startGame () {
+		console.log('start game');
 	}
 
 	resize(screenSize.get());
