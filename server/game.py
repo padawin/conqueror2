@@ -75,6 +75,8 @@ class collection(dict):
 
 	def createGame(self, player):
 		gameInstance = game()
+		gameInstance.generateNodes(15, 10, 10)
+		gameInstance.generateEdges()
 		gameInstance.addPlayer(player)
 		self[gameInstance.id] = gameInstance
 		return gameInstance
