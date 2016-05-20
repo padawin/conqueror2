@@ -35,6 +35,16 @@ function (B, canvas, camera, screenSize, map, graph) {
 		camera.h = canvas.getHeight();
 	}
 
+	function drawErrorScreen (error) {
+		canvas.drawRectangle(0, 0, canvas.getWidth(), canvas.getHeight(), 'black');
+		canvas.drawText(
+			error,
+			canvas.getWidth() / 2 - 50,
+			200,
+			'white'
+		);
+	}
+
 	/**
 	 * Main draw method. Draws the sky, the map and its objects
 	 */
