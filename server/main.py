@@ -35,6 +35,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
 
+				gameInstance.notifyPlayers(
+					message={'map': {
+						'nodes': gameInstance.nodes,
+						'edges': gameInstance.edges
+					}}
+				)
 				firstPlayer.write_message({'message': u'Your turn to start'})
 		else:
 			gameInstance = openGames.createGame(self)
