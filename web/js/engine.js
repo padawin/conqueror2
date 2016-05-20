@@ -20,9 +20,10 @@ function (B, canvas, camera, screenSize, map, graph) {
 		STATES = {
 			SOCKET_NOT_SUPPORTED: -1,
 			MAIN_MENU: 0,
-			GAME_ON_WAIT_TO_PLAY: 1,
-			GAME_ON_WAIT_FOR_TURN: 2,
-			GAME_FINISHED: 3
+			GAME_ON_WAIT_FOR_PLAYER: 1,
+			GAME_ON_WAIT_TO_PLAY: 2,
+			GAME_ON_WAIT_FOR_TURN: 3,
+			GAME_FINISHED: 4
 		},
 		currentState;
 
@@ -56,6 +57,20 @@ function (B, canvas, camera, screenSize, map, graph) {
 			canvas.getWidth() / 2 - 50,
 			200,
 			'white'
+		);
+	}
+
+	/**
+	 * Method to draw the wait screen when the player is waiting for an
+	 * opponent
+	 */
+	function drawWaitScreen () {
+		canvas.canvas.width = canvas.getWidth();
+		canvas.drawText(
+			'Waiting for a player to join',
+			canvas.getWidth() / 2 - 50,
+			200,
+			'black'
 		);
 	}
 
@@ -99,6 +114,9 @@ function (B, canvas, camera, screenSize, map, graph) {
 			else if (currentState == STATES.MAIN_MENU) {
 				drawMainMenu();
 			}
+			else if (currentState == STATES.GAME_ON_WAIT_FOR_PLAYER) {
+				drawWaitScreen();
+			}
 			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
 				m.update();
 				camera.update();
@@ -121,7 +139,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 		 */
 		B.Events.on('click', null, function (mouseX, mouseY) {
 			if (currentState == STATES.MAIN_MENU) {
-				currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+				currentState = STATES.GAME_ON_WAIT_FOR_PLAYER;
 				startGame();
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
