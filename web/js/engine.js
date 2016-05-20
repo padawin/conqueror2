@@ -85,8 +85,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 	}
 
 	/**
-	 * Entry point of the game. Initialises the map, plugs the event and does a
-	 * certain amount of mess. @TODO To be refactored
+	 * Entry point of the game. Initialises the map, plugs the event
 	 */
 	function startGame () {
 		resize(screenSize.get());
