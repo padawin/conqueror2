@@ -174,6 +174,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 				case 'GAME_MAP':
 					console.log('map received');
 					currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+					m = map(graph(data.map.nodes, data.map.edges));
 					break;
 				default:
 					console.log('unknown message:');
@@ -203,6 +204,5 @@ function (B, canvas, camera, screenSize, map, graph) {
 	lastCalledTime = Date.now();
 	fpsAccu = 0;
 
-	m = map(graph(12, 200, 200));
 	mainLoop();
 });
