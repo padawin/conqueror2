@@ -95,8 +95,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				openGames.deleteGame(self.game)
 
 app = tornado.web.Application([
-	(r'/(.*)', IndexHandler),
 	(r'/ws', WebSocketHandler),
+	(r'/(.*)', IndexHandler)
 ])
 
 if __name__ == '__main__':
