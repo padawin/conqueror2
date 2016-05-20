@@ -101,8 +101,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 		lastCalledTime = Date.now();
 		fpsAccu = 0;
 
-		m = map(graph(500, 2000, 2000));
-		camera.setPosition({x: 700, y: 500});
+		m = map(graph(12, 200, 200));
 		mainLoop();
 	}
 
