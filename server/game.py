@@ -44,13 +44,16 @@ class game:
 
 		self.nodes = sorted(self.nodes, key=operator.itemgetter('x', 'y'))
 
-	def generateEdges(self, start=0, end=None):
+	def generateEdges(self):
+		self.edges = self._generateEdges(0, None)
+
+	def _generateEdges(self, start, end):
 		if end is None:
 			end = len(self.nodes) - 1
 
 		if end - start >= 3:
-			edges = self.generateEdges(start, start + (end - start) / 2)
-			edges.extend(self.generateEdges(start + (end - start) / 2 + 1, end))
+			edges = self._generateEdges(start, start + (end - start) / 2)
+			edges.extend(self._generateEdges(start + (end - start) / 2 + 1, end))
 			return edges
 		elif end - start == 2:
 			return [
