@@ -31,6 +31,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			gameInstance.addPlayer(self)
 
 			if not gameInstance.hasFreeSlot():
+				gameInstance.defineFirstPlayer()
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
 		else:

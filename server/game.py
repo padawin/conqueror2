@@ -10,6 +10,7 @@ class game:
 		self.nodes = []
 		self.edges = []
 		self.players = {}
+		self.playerIds = []
 
 	def addPlayer(self, player):
 		if not self.hasFreeSlot():
@@ -24,6 +25,11 @@ class game:
 
 	def hasPlayers(self):
 		return len(self.players) > 0
+
+	def defineFirstPlayer(self):
+		self.playerIds = self.players.keys()
+		random.shuffle(self.playerIds)
+		self.currentPlayer = 0
 
 	def generateNodes (self, nbNodes, maxWidth, maxHeight):
 		while nbNodes > 0:
