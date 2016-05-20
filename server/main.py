@@ -35,7 +35,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
 
-				firstPlayer.write_message(u'Your turn to start')
+				firstPlayer.write_message({'message': u'Your turn to start'})
 		else:
 			gameInstance = openGames.createGame(self)
 
@@ -49,11 +49,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		if message['messageType'] == 'CLIENT_JOINED':
-			self.game.notifyPlayers(self, u'%s joined' % self.id)
+			self.game.notifyPlayers(self, {'message': u'%s joined' % self.id})
 
 	def on_close(self):
 		if self.id in clients:
-			self.game.notifyPlayers(self, u'%s left' % self.id)
+			self.game.notifyPlayers(self, {'message': u'%s left' % self.id})
 
 			del clients[self.id]
 			self.game.deletePlayer(self)
