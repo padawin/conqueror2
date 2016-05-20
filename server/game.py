@@ -2,6 +2,8 @@ import random
 import operator
 import uuid
 
+import config
+
 MAX_PLAYER_PER_GAME = 2
 
 class game:
@@ -85,7 +87,9 @@ class collection(dict):
 
 	def createGame(self, player):
 		gameInstance = game()
-		gameInstance.generateNodes(15, 10, 10)
+		gameInstance.generateNodes(
+			config.nbNodes, config.mapWidth, config.mapHeight
+		)
 		gameInstance.generateEdges()
 		gameInstance.addPlayer(player)
 		self[gameInstance.id] = gameInstance
