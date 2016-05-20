@@ -17,8 +17,10 @@ fullGames = game.collection()
 
 class IndexHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
-	def get(self):
-		self.render("../web/index.html")
+	def get(self, url):
+		if url == '':
+			url = 'index.html'
+		self.render("../web/%s" % url)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self, *args):
@@ -73,7 +75,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				openGames.deleteGame(self.game)
 
 app = tornado.web.Application([
-	(r'/', IndexHandler),
+	(r'/(.*)', IndexHandler),
 	(r'/ws', WebSocketHandler),
 ])
 
