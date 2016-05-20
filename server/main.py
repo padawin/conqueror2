@@ -12,8 +12,8 @@ define("port", default=8888, help="run on the given port", type=int)
 
 # we gonna store clients in dictionary..
 clients = dict()
-openGames = dict()
-fullGames = dict()
+openGames = game.collection()
+fullGames = game.collection()
 
 class IndexHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
@@ -27,15 +27,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		clients[self.id] = {"id": self.id, "object": self}
 
 		if len(openGames.keys()) > 0:
-			gameInstance = openGames[openGames.keys()[0]]
+			gameInstance = openGames.getGame()
 			gameInstance.addPlayer(self)
-			fullGames[gameInstance.id] = gameInstance
-			del openGames[gameInstance.id]
-
+			fullGames.addGame(gameInstance)
+			openGames.deleteGame(gameInstance)
 		else:
-			gameInstance = game.game()
-			gameInstance.addPlayer(self)
-			openGames[gameInstance.id] = gameInstance
+			gameInstance = openGames.createGame(self)
 
 		self.game = gameInstance
 
@@ -47,30 +44,22 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		if message['messageType'] == 'CLIENT_JOINED':
-			players = self.game.players
-			for playerId in players.keys():
-				if players[playerId].id is not self.id:
-					players[playerId].write_message(
-						u'%s joined' % self.id
-					)
+			self.game.notifyPlayers(self, u'%s joined' % self.id)
 
 	def on_close(self):
 		if self.id in clients:
-			players = self.game.players
-			for playerId in players.keys():
-				if players[playerId].id is not self.id:
-					players[playerId].write_message(u'%s left' % self.id)
+			self.game.notifyPlayers(self, u'%s left' % self.id)
 
 			del clients[self.id]
-			del self.game.players[self.id]
+			self.game.deletePlayer(self)
 
 			# the game still has a player, it is now open
-			if len(self.game.players.keys()) == 1:
-				openGames[self.game.id] = self.game
-				del fullGames[self.game.id]
+			if self.game.hasPlayers():
+				openGames.addGame(self.game)
+				fullGames.deleteGame(self.game)
 			# Else the game is empty, delete it
 			else:
-				del openGames[self.game.id]
+				openGames.deleteGame(self.game)
 
 app = tornado.web.Application([
 	(r'/', IndexHandler),

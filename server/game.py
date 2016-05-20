@@ -16,6 +16,12 @@ class game:
 	def hasFreeSlot(self):
 		return len(self.players) < 2
 
+	def deletePlayer(self, player):
+		del self.players[player.id]
+
+	def hasPlayers(self):
+		return len(self.players) > 0
+
 	def generateNodes (self, nbNodes, maxWidth, maxHeight):
 		while nbNodes > 0:
 			self.nodes.append({
@@ -42,3 +48,33 @@ class game:
 			]
 		else:
 			return [[self.nodes[start], self.nodes[start + 1]]]
+
+	def notifyPlayers(self, emitter, message):
+		players = self.players
+		for playerId in players.keys():
+			if players[playerId].id is not emitter.id:
+				players[playerId].write_message(message)
+
+
+class collection(dict):
+	def __init__(self):
+		super(collection, self).__init__()
+
+	def deleteGame(self, gameInstance):
+		del self[gameInstance.id]
+
+	def addGame(self, gameInstance):
+		self[gameInstance.id] = gameInstance
+
+	def getGame(self, gameId=None):
+		# return the first available
+		if gameId is None:
+			return self[self.keys()[0]]
+		else:
+			return self[gameId]
+
+	def createGame(self, player):
+		gameInstance = game()
+		gameInstance.addPlayer(player)
+		self[gameInstance.id] = gameInstance
+		return gameInstance
