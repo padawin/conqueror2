@@ -2,6 +2,7 @@ import random
 import operator
 import uuid
 
+MAX_PLAYER_PER_GAME = 2
 
 class game:
 	def __init__(self):
@@ -14,7 +15,7 @@ class game:
 		self.players[player.id] = player
 
 	def hasFreeSlot(self):
-		return len(self.players) < 2
+		return len(self.players) < MAX_PLAYER_PER_GAME
 
 	def deletePlayer(self, player):
 		del self.players[player.id]
