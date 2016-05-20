@@ -18,6 +18,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 		fpsAccu,
 		fps,
 		STATES = {
+			SOCKET_NOT_SUPPORTED: -1,
 			MAIN_MENU: 0,
 			GAME_ON_WAIT_TO_PLAY: 1,
 			GAME_ON_WAIT_FOR_TURN: 2,
@@ -92,7 +93,10 @@ function (B, canvas, camera, screenSize, map, graph) {
 				}
 			}
 
-			if (currentState == STATES.MAIN_MENU) {
+			if (currentState == STATES.SOCKET_NOT_SUPPORTED) {
+				drawErrorScreen('Socket not supported');
+			}
+			else if (currentState == STATES.MAIN_MENU) {
 				drawMainMenu();
 			}
 			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
@@ -134,7 +138,14 @@ function (B, canvas, camera, screenSize, map, graph) {
 	}
 
 	resize(screenSize.get());
-	currentState = STATES.MAIN_MENU;
+
+
+	if ("WebSocket" in window) {
+		currentState = STATES.MAIN_MENU;
+	}
+	else {
+		currentState = STATES.SOCKET_NOT_SUPPORTED;
+	}
 
 	/**
 	 * Event fired when the window is resized
