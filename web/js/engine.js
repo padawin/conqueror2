@@ -47,7 +47,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 	}
 
 	/**
-	 * Main draw method. Draws the sky, the map and its objects
+	 * Method to draw the main menu
 	 */
 	function drawMainMenu () {
 		canvas.drawRectangle(0, 0, canvas.getWidth(), canvas.getHeight(), 'black');
