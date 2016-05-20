@@ -12,6 +12,8 @@ class game:
 		self.players = {}
 
 	def addPlayer(self, player):
+		if not self.hasFreeSlot():
+			raise OverflowError()
 		self.players[player.id] = player
 
 	def hasFreeSlot(self):
