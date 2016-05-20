@@ -1,3 +1,3 @@
 nbNodes = 15
-mapWidth = 10
-mapHeight = 10
+mapWidth = 60
+mapHeight = 60
