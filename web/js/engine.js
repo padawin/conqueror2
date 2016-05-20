@@ -153,6 +153,32 @@ function (B, canvas, camera, screenSize, map, graph) {
 	 */
 	function startGame () {
 		console.log('start game');
+		var ws = new WebSocket("ws://localhost:8888/ws");
+		ws.onopen = function(evt) {
+			ws.send(JSON.stringify({messageType: 'CLIENT_JOINED'}));
+		};
+		ws.onmessage = function (evt) {
+			var data = JSON.parse(evt.data);
+			console.log(data);
+			switch (data.type) {
+				case 'PLAYER_JOINED':
+					console.log('player joined');
+					break;
+				 case 'PLAYER_LEFT':
+					console.log('player left');
+					break;
+				case 'PLAYER_TURN':
+					console.log('your turn');
+					break;
+				case 'GAME_MAP':
+					console.log('map received');
+					break;
+				default:
+					console.log('unknown message:');
+					console.log(data);
+			}
+		};
+		ws.onclose = function() {};
 	}
 
 	resize(screenSize.get());
