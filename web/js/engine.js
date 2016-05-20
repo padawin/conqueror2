@@ -38,7 +38,20 @@ function (B, canvas, camera, screenSize, map, graph) {
 	/**
 	 * Main draw method. Draws the sky, the map and its objects
 	 */
-	function draw () {
+	function drawMainMenu () {
+		canvas.drawRectangle(0, 0, canvas.getWidth(), canvas.getHeight(), 'black');
+		canvas.drawText(
+			'Click to start the game',
+			canvas.getWidth() / 2 - 50,
+			200,
+			'white'
+		);
+	}
+
+	/**
+	 * Main draw method. Draws the sky, the map and its objects
+	 */
+	function drawGame () {
 		canvas.canvas.width = canvas.getWidth();
 		m.draw(camera, debug);
 	}
@@ -71,7 +84,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 
 			m.update();
 			camera.update();
-			draw();
+			drawGame();
 		}
 	}
 
