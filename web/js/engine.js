@@ -82,9 +82,14 @@ function (B, canvas, camera, screenSize, map, graph) {
 				}
 			}
 
-			m.update();
-			camera.update();
-			drawGame();
+			if (currentState == STATES.MAIN_MENU) {
+				drawMainMenu();
+			}
+			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
+				m.update();
+				camera.update();
+				drawGame();
+			}
 		}
 	}
 
