@@ -92,25 +92,24 @@ function (B, canvas, camera, screenSize, map, graph) {
 	}
 
 	/**
-	 * Entry point of the game. Initialises the map, plugs the event
+	 * Method executed when clicking on the main menu
 	 */
 	function startGame () {
-		resize(screenSize.get());
-		currentState = STATES.MAIN_MENU;
-
-		/**
-		 * Event fired when the window is resized
-		 */
-		B.Events.on('resize', null, resize);
-
-		initEvents();
-		timePreviousFrame = Date.now();
-		lastCalledTime = Date.now();
-		fpsAccu = 0;
-
-		m = map(graph(12, 200, 200));
-		mainLoop();
 	}
 
-	startGame();
+	resize(screenSize.get());
+	currentState = STATES.MAIN_MENU;
+
+	/**
+	 * Event fired when the window is resized
+	 */
+	B.Events.on('resize', null, resize);
+
+	initEvents();
+	timePreviousFrame = Date.now();
+	lastCalledTime = Date.now();
+	fpsAccu = 0;
+
+	m = map(graph(12, 200, 200));
+	mainLoop();
 });
