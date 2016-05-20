@@ -16,7 +16,14 @@ function (B, canvas, camera, screenSize, map, graph) {
 		// used in debug mode
 		lastCalledTime,
 		fpsAccu,
-		fps;
+		fps,
+		STATES = {
+			MAIN_MENU: 0,
+			GAME_ON_WAIT_TO_PLAY: 1,
+			GAME_ON_WAIT_FOR_TURN: 2,
+			GAME_FINISHED: 3
+		},
+		currentState;
 
 	/**
 	 * Method to adapt the canvas dimensions to the screen and the camera to the
@@ -89,6 +96,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 	 */
 	function startGame () {
 		resize(screenSize.get());
+		currentState = STATES.MAIN_MENU;
 
 		/**
 		 * Event fired when the window is resized
