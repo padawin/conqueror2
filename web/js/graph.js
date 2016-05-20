@@ -18,16 +18,29 @@ function (canvas, B) {
 			edges: edges
 		};
 
-		graph.draw = function (camera) {
+		function adaptCoordToGridCellSize (coord, gridCellSize) {
+			return {
+				x: coord.x * gridCellSize + gridCellSize / 2,
+				y: coord.y * gridCellSize + gridCellSize / 2
+			}
+		}
+
+		graph.draw = function (camera, gridCellSize) {
 			canvasContext.beginPath();
 			graph.nodes.forEach(function (node) {
-				var coords = camera.adapt(node);
+				var coords = camera.adapt(
+					adaptCoordToGridCellSize(node, gridCellSize)
+				);
 				canvasContext.moveTo(coords.x, coords.y);
-				canvasContext.arc(coords.x, coords.y, 5, 0, 2 * Math.PI, false);
+				canvasContext.arc(coords.x, coords.y, gridCellSize, 0, 2 * Math.PI, false);
 			});
 			graph.edges.forEach(function (edge) {
-				var coordsStart = camera.adapt(edge[0]),
-					coordsEnd = camera.adapt(edge[1]);
+				var coordsStart = camera.adapt(
+						adaptCoordToGridCellSize(edge[0], gridCellSize)
+					),
+					coordsEnd = camera.adapt(
+						adaptCoordToGridCellSize(edge[1], gridCellSize)
+					);
 				canvasContext.moveTo(coordsStart.x, coordsStart.y);
 				canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
 			});

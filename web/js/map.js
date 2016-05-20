@@ -5,6 +5,8 @@ loader.addModule('map', 'B', function (canvas, B) {
 	 * Module to manage the game map
 	 */
 
+	var cellDimensions = 10;
+
 	/**
 	 * Map construct. Build the level, set the objects and the frame information
 	 */
@@ -18,7 +20,7 @@ loader.addModule('map', 'B', function (canvas, B) {
 		};
 
 		map.draw = function (camera) {
-			map.graph.draw(camera);
+			map.graph.draw(camera, cellDimensions);
 		};
 
 		return map;
