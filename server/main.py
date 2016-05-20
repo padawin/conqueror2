@@ -38,12 +38,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				openGames.deleteGame(gameInstance)
 
 				gameInstance.notifyPlayers(
-					message={'map': {
-						'nodes': gameInstance.nodes,
-						'edges': gameInstance.edges
-					}}
+					message={
+						'type': 'GAME_MAP',
+						'map': {
+							'nodes': gameInstance.nodes,
+							'edges': gameInstance.edges
+						}
+					}
 				)
-				firstPlayer.write_message({'message': u'Your turn to start'})
+				firstPlayer.write_message(
+					{
+						'type': 'PLAYER_TURN',
+						'message': u'Your turn to start'
+					}
+				)
 		else:
 			gameInstance = openGames.createGame(self)
 
@@ -57,11 +65,23 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		if message['messageType'] == 'CLIENT_JOINED':
-			self.game.notifyPlayers(self, {'message': u'%s joined' % self.id})
+			self.game.notifyPlayers(
+				self,
+				{
+					'type': 'PLAYER_JOINED',
+					'message': u'%s joined' % self.id
+				}
+			)
 
 	def on_close(self):
 		if self.id in clients:
-			self.game.notifyPlayers(self, {'message': u'%s left' % self.id})
+			self.game.notifyPlayers(
+				self,
+				{
+					'type': 'PLAYER_LEFT',
+					'message': u'%s left' % self.id
+				}
+			)
 
 			del clients[self.id]
 			self.game.deletePlayer(self)
@@ -75,8 +95,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				openGames.deleteGame(self.game)
 
 app = tornado.web.Application([
-	(r'/(.*)', IndexHandler),
 	(r'/ws', WebSocketHandler),
+	(r'/(.*)', IndexHandler)
 ])
 
 if __name__ == '__main__':

@@ -18,10 +18,12 @@ function (B, canvas, camera, screenSize, map, graph) {
 		fpsAccu,
 		fps,
 		STATES = {
+			SOCKET_NOT_SUPPORTED: -1,
 			MAIN_MENU: 0,
-			GAME_ON_WAIT_TO_PLAY: 1,
-			GAME_ON_WAIT_FOR_TURN: 2,
-			GAME_FINISHED: 3
+			GAME_ON_WAIT_FOR_PLAYER: 1,
+			GAME_ON_WAIT_TO_PLAY: 2,
+			GAME_ON_WAIT_FOR_TURN: 3,
+			GAME_FINISHED: 4
 		},
 		currentState;
 
@@ -35,8 +37,18 @@ function (B, canvas, camera, screenSize, map, graph) {
 		camera.h = canvas.getHeight();
 	}
 
+	function drawErrorScreen (error) {
+		canvas.drawRectangle(0, 0, canvas.getWidth(), canvas.getHeight(), 'black');
+		canvas.drawText(
+			error,
+			canvas.getWidth() / 2 - 50,
+			200,
+			'white'
+		);
+	}
+
 	/**
-	 * Main draw method. Draws the sky, the map and its objects
+	 * Method to draw the main menu
 	 */
 	function drawMainMenu () {
 		canvas.drawRectangle(0, 0, canvas.getWidth(), canvas.getHeight(), 'black');
@@ -45,6 +57,20 @@ function (B, canvas, camera, screenSize, map, graph) {
 			canvas.getWidth() / 2 - 50,
 			200,
 			'white'
+		);
+	}
+
+	/**
+	 * Method to draw the wait screen when the player is waiting for an
+	 * opponent
+	 */
+	function drawWaitScreen () {
+		canvas.canvas.width = canvas.getWidth();
+		canvas.drawText(
+			'Waiting for a player to join',
+			canvas.getWidth() / 2 - 50,
+			200,
+			'black'
 		);
 	}
 
@@ -82,13 +108,21 @@ function (B, canvas, camera, screenSize, map, graph) {
 				}
 			}
 
-			if (currentState == STATES.MAIN_MENU) {
+			if (currentState == STATES.SOCKET_NOT_SUPPORTED) {
+				drawErrorScreen('Socket not supported');
+			}
+			else if (currentState == STATES.MAIN_MENU) {
 				drawMainMenu();
 			}
+			else if (currentState == STATES.GAME_ON_WAIT_FOR_PLAYER) {
+				drawWaitScreen();
+			}
 			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
-				m.update();
-				camera.update();
-				drawGame();
+				if (m) {
+					m.update();
+					camera.update();
+					drawGame();
+				}
 			}
 		}
 	}
@@ -107,7 +141,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 		 */
 		B.Events.on('click', null, function (mouseX, mouseY) {
 			if (currentState == STATES.MAIN_MENU) {
-				currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+				currentState = STATES.GAME_ON_WAIT_FOR_PLAYER;
 				startGame();
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
@@ -121,10 +155,46 @@ function (B, canvas, camera, screenSize, map, graph) {
 	 */
 	function startGame () {
 		console.log('start game');
+		var ws = new WebSocket("ws://localhost:8888/ws");
+		ws.onopen = function(evt) {
+			ws.send(JSON.stringify({messageType: 'CLIENT_JOINED'}));
+		};
+		ws.onmessage = function (evt) {
+			var data = JSON.parse(evt.data);
+			console.log(data);
+			switch (data.type) {
+				case 'PLAYER_JOINED':
+					console.log('player joined');
+					break;
+				 case 'PLAYER_LEFT':
+					console.log('player left');
+					break;
+				case 'PLAYER_TURN':
+					console.log('your turn');
+					currentState = STATES.GAME_ON_WAIT_TO_PLAY;
+					break;
+				case 'GAME_MAP':
+					console.log('map received');
+					currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+					m = map(graph(data.map.nodes, data.map.edges));
+					break;
+				default:
+					console.log('unknown message:');
+					console.log(data);
+			}
+		};
+		ws.onclose = function() {};
 	}
 
 	resize(screenSize.get());
-	currentState = STATES.MAIN_MENU;
+
+
+	if ("WebSocket" in window) {
+		currentState = STATES.MAIN_MENU;
+	}
+	else {
+		currentState = STATES.SOCKET_NOT_SUPPORTED;
+	}
 
 	/**
 	 * Event fired when the window is resized
@@ -136,6 +206,5 @@ function (B, canvas, camera, screenSize, map, graph) {
 	lastCalledTime = Date.now();
 	fpsAccu = 0;
 
-	m = map(graph(12, 200, 200));
 	mainLoop();
 });
