@@ -64,10 +64,10 @@ class game:
 		else:
 			return [[self.nodes[start], self.nodes[start + 1]]]
 
-	def notifyPlayers(self, emitter, message):
+	def notifyPlayers(self, emitter = None, message = None):
 		players = self.players
 		for playerId in players.keys():
-			if players[playerId].id is not emitter.id:
+			if emitter is None or players[playerId].id is not emitter.id:
 				players[playerId].write_message(message)
 
 
