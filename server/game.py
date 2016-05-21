@@ -36,7 +36,8 @@ class game:
 		self.currentPlayer = 0
 		return self.players[self.playerIds[self.currentPlayer]]
 
-	def generateNodes (self, nbNodes, maxWidth, maxHeight):
+
+	def generateNodes(self, nbNodes, maxWidth, maxHeight):
 		while nbNodes > 0:
 			self.nodes.append({
 				'x': random.randint(0, maxWidth - 1),
