@@ -38,7 +38,8 @@ class game:
 		while nbNodes > 0:
 			self.nodes.append({
 				'x': random.randint(0, maxWidth - 1),
-				'y': random.randint(0, maxHeight - 1)
+				'y': random.randint(0, maxHeight - 1),
+				'owned_by': None
 			})
 			nbNodes -= 1;
 
