@@ -31,6 +31,13 @@ class game:
 	def initialisePlayers(self):
 		self.playerIds = self.players.keys()
 
+		# Define the start position of each player
+		nodes = list(self.nodes)
+		random.shuffle(nodes)
+		for index, playerId in enumerate(self.playerIds):
+			node = nodes.pop(0)
+			node['owned_by'] = index
+
 	def defineFirstPlayer(self):
 		random.shuffle(self.playerIds)
 		self.currentPlayer = 0
