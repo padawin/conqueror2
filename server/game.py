@@ -28,8 +28,10 @@ class game:
 	def hasPlayers(self):
 		return len(self.players) > 0
 
-	def defineFirstPlayer(self):
+	def initialisePlayers(self):
 		self.playerIds = self.players.keys()
+
+	def defineFirstPlayer(self):
 		random.shuffle(self.playerIds)
 		self.currentPlayer = 0
 		return self.players[self.playerIds[self.currentPlayer]]
