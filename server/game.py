@@ -46,7 +46,9 @@ class game:
 
 
 	def generateNodes(self, nbNodes, maxWidth, maxHeight):
-		self.nodesGrid = list([[None] * maxHeight] * maxWidth)
+		self.nodesGrid = [
+			[None for x in range(maxWidth)] for y in range(maxHeight)
+		]
 		while nbNodes > 0:
 			x = random.randint(0, maxWidth - 1)
 			y = random.randint(0, maxHeight - 1)
