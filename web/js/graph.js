@@ -12,10 +12,11 @@ function (canvas, B) {
 	/**
 	 * Map construct. Build the level, set the objects and the frame information
 	 */
-	function Graph (nodes, edges) {
+	function Graph (data) {
 		var graph = {
-			nodes: nodes,
-			edges: edges
+			nodesGrid: data.nodesGrid,
+			nodes: data.nodes,
+			edges: data.edges
 		};
 
 		function adaptCoordToGridCellSize (coord, gridCellSize) {
