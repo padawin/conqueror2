@@ -33,6 +33,19 @@ function (canvas, B) {
 
 		graph.draw = function (camera, gridCellSize) {
 			var owner;
+			canvasContext.beginPath();
+			graph.edges.forEach(function (edge) {
+				var coordsStart = camera.adapt(
+						adaptCoordToGridCellSize(edge[0], gridCellSize)
+					),
+					coordsEnd = camera.adapt(
+						adaptCoordToGridCellSize(edge[1], gridCellSize)
+					);
+				canvasContext.moveTo(coordsStart.x, coordsStart.y);
+				canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
+			});
+			canvasContext.stroke();
+
 			graph.nodes.forEach(function (node) {
 				var coords = camera.adapt(
 					adaptCoordToGridCellSize(node, gridCellSize)
@@ -47,18 +60,6 @@ function (canvas, B) {
 				canvasContext.arc(coords.x, coords.y, gridCellSize / 2, 0, 2 * Math.PI, false);
 				canvasContext.fill();
 			});
-
-			graph.edges.forEach(function (edge) {
-				var coordsStart = camera.adapt(
-						adaptCoordToGridCellSize(edge[0], gridCellSize)
-					),
-					coordsEnd = camera.adapt(
-						adaptCoordToGridCellSize(edge[1], gridCellSize)
-					);
-				canvasContext.moveTo(coordsStart.x, coordsStart.y);
-				canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
-			});
-			canvasContext.stroke();
 		};
 
 		graph.getNode = function (coords) {
