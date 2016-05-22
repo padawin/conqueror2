@@ -146,6 +146,7 @@ function (B, canvas, camera, screenSize, map) {
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
 				console.log('handle play click');
+				m.click(camera.toWorldCoords({x: mouseX, y: mouseY}));
 			}
 		});
 	}

@@ -19,6 +19,22 @@ loader.addModule('map', 'B', 'graph', function (B, graph) {
 
 		};
 
+		/**
+		* Convert a set of pixels in the map projection and returns the coordinates
+		* of the cell in the grid
+		*/
+		function pixelsToCoords (coords) {
+			return {
+				x: ~~(coords.x / cellDimensions),
+				y: ~~(coords.y / cellDimensions)
+			};
+		}
+
+		map.click = function (coords) {
+			coords = pixelsToCoords(coords);
+			console.log(map.graph.getNode(coords));
+		};
+
 		map.draw = function (camera) {
 			map.graph.draw(camera, cellDimensions);
 		};

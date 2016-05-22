@@ -49,6 +49,13 @@ function (canvas, B) {
 			canvasContext.fill();
 		};
 
+		graph.getNode = function (coords) {
+			if (graph.nodesGrid[coords.x]) {
+				return graph.nodesGrid[coords.x][coords.y];
+			}
+			return null;
+		};
+
 		return graph;
 	}
 
