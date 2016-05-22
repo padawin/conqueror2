@@ -57,6 +57,8 @@ class game:
 			self.nodes.append({'x': x, 'y': y})
 			nbNodes -= 1;
 
+		self.nodes = sorted(self.nodes, key=operator.itemgetter('x', 'y'))
+
 	def generateEdges(self):
 		self.edges = self._generateEdges(0, None)
 
