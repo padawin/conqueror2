@@ -7,7 +7,12 @@ function (canvas, B) {
 	 * Module to manage the game map
 	 */
 
-	var canvasContext = canvas.getContext();
+	var canvasContext = canvas.getContext(),
+		ownershipColors = {
+			'-1': 'black',
+			'0': 'red',
+			'1': 'green'
+		};
 
 	/**
 	 * Map construct. Build the level, set the objects and the frame information
@@ -27,14 +32,22 @@ function (canvas, B) {
 		}
 
 		graph.draw = function (camera, gridCellSize) {
-			canvasContext.beginPath();
+			var owner;
 			graph.nodes.forEach(function (node) {
 				var coords = camera.adapt(
 					adaptCoordToGridCellSize(node, gridCellSize)
 				);
+
+				canvasContext.beginPath();
 				canvasContext.moveTo(coords.x, coords.y);
-				canvasContext.arc(coords.x, coords.y, gridCellSize, 0, 2 * Math.PI, false);
+				owner = graph.nodesGrid[node.x][node.y]['owned_by'];
+				canvasContext.fillStyle = ownershipColors[
+					owner === null ? '-1' : owner
+				];
+				canvasContext.arc(coords.x, coords.y, gridCellSize / 2, 0, 2 * Math.PI, false);
+				canvasContext.fill();
 			});
+
 			graph.edges.forEach(function (edge) {
 				var coordsStart = camera.adapt(
 						adaptCoordToGridCellSize(edge[0], gridCellSize)
@@ -46,7 +59,6 @@ function (canvas, B) {
 				canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
 			});
 			canvasContext.stroke();
-			canvasContext.fill();
 		};
 
 		graph.getNode = function (coords) {
