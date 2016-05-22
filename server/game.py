@@ -10,6 +10,7 @@ class game:
 	def __init__(self):
 		self.id = uuid.uuid4()
 		self.nodes = []
+		self.nodesGrid = []
 		self.edges = []
 		self.players = {}
 		self.playerIds = []
@@ -36,7 +37,7 @@ class game:
 		random.shuffle(nodes)
 		for index, playerId in enumerate(self.playerIds):
 			node = nodes.pop(0)
-			node['owned_by'] = index
+			self.nodesGrid[node['x']][node['y']]['owned_by'] = index
 
 	def defineFirstPlayer(self):
 		random.shuffle(self.playerIds)
@@ -45,15 +46,14 @@ class game:
 
 
 	def generateNodes(self, nbNodes, maxWidth, maxHeight):
+		self.nodesGrid = list([[None] * maxHeight] * maxWidth)
 		while nbNodes > 0:
-			self.nodes.append({
-				'x': random.randint(0, maxWidth - 1),
-				'y': random.randint(0, maxHeight - 1),
-				'owned_by': None
-			})
-			nbNodes -= 1;
+			x = random.randint(0, maxWidth - 1)
+			y = random.randint(0, maxHeight - 1)
 
-		self.nodes = sorted(self.nodes, key=operator.itemgetter('x', 'y'))
+			self.nodesGrid[x][y] = {'owned_by': None}
+			self.nodes.append({'x': x, 'y': y})
+			nbNodes -= 1;
 
 	def generateEdges(self):
 		self.edges = self._generateEdges(0, None)
