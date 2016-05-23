@@ -99,6 +99,13 @@ class edgeList(dict):
 		self[keyStart].append(edge[1])
 		self[keyEnd].append(edge[0])
 
+	def getEdgesFromNode(self, node):
+		tmp = collections.OrderedDict()
+		tmp['x'] = node['x']
+		tmp['y'] = node['y']
+		key = json.dumps(tmp, separators=(',', ':'))
+		return self[key]
+
 class collection(dict):
 	def __init__(self):
 		super(collection, self).__init__()
