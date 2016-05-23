@@ -26,7 +26,8 @@ function (B, canvas, camera, screenSize, map) {
 			GAME_FINISHED: 4
 		},
 		currentState,
-		playerId;
+		playerId,
+		ws;
 
 	/**
 	 * Method to adapt the canvas dimensions to the screen and the camera to the
@@ -157,7 +158,7 @@ function (B, canvas, camera, screenSize, map) {
 	 */
 	function startGame () {
 		console.log('start game');
-		var ws = new WebSocket("ws://localhost:8888/ws");
+		ws = new WebSocket("ws://localhost:8888/ws");
 		ws.onopen = function(evt) {
 			ws.send(JSON.stringify({messageType: 'CLIENT_JOINED'}));
 		};
