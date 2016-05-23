@@ -47,7 +47,22 @@ class game:
 		return self.playerIds
 
 	def conquerNode(self, node, playerIndex):
-		self.nodesGrid[node['x']][node['y']]['owned_by'] = playerIndex
+		neighbours = self.edges.getEdgesFromNode(node)
+		nbAlliedNeighbours = 0
+		nbEnemyNeighbours = 0
+		for n in neighbours:
+			neighbour = self.nodesGrid[n['x']][n['y']]
+			if neighbour['owned_by'] is not None:
+				if neighbour['owned_by'] == playerIndex:
+					nbAlliedNeighbours += 1
+				else:
+					nbEnemyNeighbours += 1
+
+		if nbEnemyNeighbours >= nbAlliedNeighbours:
+			return False
+		else:
+			self.nodesGrid[node['x']][node['y']]['owned_by'] = playerIndex
+			return True
 
 	def generateNodes(self, nbNodes, maxWidth, maxHeight):
 		self.nodesGrid = [
