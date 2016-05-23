@@ -84,17 +84,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			)
 		elif message['messageType'] == 'CAPTURED_NODE':
 			if self.game.playerIds[message['playerId']] == self.id:
-				self.game.conquerNode(message['node'], message['playerId'])
-				self.game.notifyPlayers(
-					message={
-						'type': 'GAME_MAP',
-						'map': {
-							'nodesGrid': self.game.nodesGrid,
-							'nodes': self.game.nodes,
-							'edges': self.game.edges
+				if self.game.conquerNode(message['node'], message['playerId']):
+					self.game.notifyPlayers(
+						message={
+							'type': 'GAME_MAP',
+							'map': {
+								'nodesGrid': self.game.nodesGrid,
+								'nodes': self.game.nodes,
+								'edges': self.game.edges
+							}
 						}
-					}
-				)
+					)
 
 	def on_close(self):
 		if self.id in clients:
