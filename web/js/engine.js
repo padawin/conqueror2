@@ -25,7 +25,8 @@ function (B, canvas, camera, screenSize, map) {
 			GAME_ON_WAIT_FOR_TURN: 3,
 			GAME_FINISHED: 4
 		},
-		currentState;
+		currentState,
+		playerId;
 
 	/**
 	 * Method to adapt the canvas dimensions to the screen and the camera to the
@@ -164,6 +165,9 @@ function (B, canvas, camera, screenSize, map) {
 			var data = JSON.parse(evt.data);
 			console.log(data);
 			switch (data.type) {
+				case 'PLAYER_ID':
+					playerId = data['message'];
+					break;
 				case 'PLAYER_JOINED':
 					console.log('player joined');
 					break;

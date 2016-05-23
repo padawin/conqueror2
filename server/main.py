@@ -38,6 +38,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
 
+				for key, playerId in enumerate(playersOrder):
+					gameInstance.players[playerId].write_message(
+						{
+							'type': 'PLAYER_ID',
+							'message': key
+						}
+					)
+
 				gameInstance.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
