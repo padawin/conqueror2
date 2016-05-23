@@ -2,6 +2,7 @@ import random
 import operator
 import uuid
 import json
+import collections
 
 import config
 
@@ -55,7 +56,10 @@ class game:
 			y = random.randint(0, maxHeight - 1)
 
 			self.nodesGrid[x][y] = {'owned_by': None}
-			self.nodes.append({'x': x, 'y': y})
+			node = collections.OrderedDict()
+			node['x'] = x
+			node['y'] = y
+			self.nodes.append(node)
 			nbNodes -= 1;
 
 		self.nodes = sorted(self.nodes, key=operator.itemgetter('x', 'y'))
