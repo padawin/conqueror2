@@ -34,7 +34,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 			if not gameInstance.hasFreeSlot():
 				gameInstance.initialisePlayers()
-				firstPlayer = gameInstance.defineFirstPlayer()
+				playersOrder = gameInstance.definePlayersOrder()
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
 
@@ -48,7 +48,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 						}
 					}
 				)
-				firstPlayer.write_message(
+				gameInstance.players[playersOrder[0]].write_message(
 					{
 						'type': 'PLAYER_TURN',
 						'message': u'Your turn to start'

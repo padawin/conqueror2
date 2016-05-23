@@ -41,10 +41,10 @@ class game:
 			node = nodes.pop(0)
 			self.nodesGrid[node['x']][node['y']]['owned_by'] = index
 
-	def defineFirstPlayer(self):
+	def definePlayersOrder(self):
 		random.shuffle(self.playerIds)
 		self.currentPlayer = 0
-		return self.players[self.playerIds[self.currentPlayer]]
+		return self.playerIds
 
 
 	def generateNodes(self, nbNodes, maxWidth, maxHeight):
