@@ -148,7 +148,18 @@ function (B, canvas, camera, screenSize, map) {
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
 				console.log('handle play click');
-				m.click(camera.toWorldCoords({x: mouseX, y: mouseY}));
+				var capturedNode = m.click(
+					playerId,
+					camera.toWorldCoords({x: mouseX, y: mouseY})
+				);
+
+				if (capturedNode) {
+					ws.send(JSON.stringify({
+						'messageType': 'CAPTURED_NODE',
+						'node': capturedNode,
+						'playerId': playerId
+					}));
+				}
 			}
 		});
 	}
