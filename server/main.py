@@ -33,6 +33,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			gameInstance.addPlayer(self)
 
 			if not gameInstance.hasFreeSlot():
+				gameInstance.initialisePlayers()
 				firstPlayer = gameInstance.defineFirstPlayer()
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
@@ -41,6 +42,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					message={
 						'type': 'GAME_MAP',
 						'map': {
+							'nodesGrid': gameInstance.nodesGrid,
 							'nodes': gameInstance.nodes,
 							'edges': gameInstance.edges
 						}

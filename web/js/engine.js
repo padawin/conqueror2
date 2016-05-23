@@ -1,6 +1,6 @@
 loader.executeModule('main',
-'B', 'canvas', 'camera', 'screenSize', 'map', 'graph',
-function (B, canvas, camera, screenSize, map, graph) {
+'B', 'canvas', 'camera', 'screenSize', 'map',
+function (B, canvas, camera, screenSize, map) {
 	"use strict";
 
 	/**
@@ -146,6 +146,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
 				console.log('handle play click');
+				m.click(camera.toWorldCoords({x: mouseX, y: mouseY}));
 			}
 		});
 	}
@@ -176,7 +177,7 @@ function (B, canvas, camera, screenSize, map, graph) {
 				case 'GAME_MAP':
 					console.log('map received');
 					currentState = STATES.GAME_ON_WAIT_FOR_TURN;
-					m = map(graph(data.map.nodes, data.map.edges));
+					m = map(data.map);
 					break;
 				default:
 					console.log('unknown message:');

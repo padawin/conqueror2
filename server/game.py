@@ -1,6 +1,7 @@
 import random
 import operator
 import uuid
+import json
 
 import config
 
@@ -10,7 +11,8 @@ class game:
 	def __init__(self):
 		self.id = uuid.uuid4()
 		self.nodes = []
-		self.edges = []
+		self.nodesGrid = []
+		self.edges = edgeList()
 		self.players = {}
 		self.playerIds = []
 
@@ -28,41 +30,49 @@ class game:
 	def hasPlayers(self):
 		return len(self.players) > 0
 
-	def defineFirstPlayer(self):
+	def initialisePlayers(self):
 		self.playerIds = self.players.keys()
+
+		# Define the start position of each player
+		nodes = list(self.nodes)
+		random.shuffle(nodes)
+		for index, playerId in enumerate(self.playerIds):
+			node = nodes.pop(0)
+			self.nodesGrid[node['x']][node['y']]['owned_by'] = index
+
+	def defineFirstPlayer(self):
 		random.shuffle(self.playerIds)
 		self.currentPlayer = 0
 		return self.players[self.playerIds[self.currentPlayer]]
 
-	def generateNodes (self, nbNodes, maxWidth, maxHeight):
+
+	def generateNodes(self, nbNodes, maxWidth, maxHeight):
+		self.nodesGrid = [
+			[None for x in range(maxWidth)] for y in range(maxHeight)
+		]
 		while nbNodes > 0:
-			self.nodes.append({
-				'x': random.randint(0, maxWidth - 1),
-				'y': random.randint(0, maxHeight - 1)
-			})
+			x = random.randint(0, maxWidth - 1)
+			y = random.randint(0, maxHeight - 1)
+
+			self.nodesGrid[x][y] = {'owned_by': None}
+			self.nodes.append({'x': x, 'y': y})
 			nbNodes -= 1;
 
 		self.nodes = sorted(self.nodes, key=operator.itemgetter('x', 'y'))
 
-	def generateEdges(self):
-		self.edges = self._generateEdges(0, None)
-
-	def _generateEdges(self, start, end):
+	def generateEdges(self, start=0, end=None):
 		if end is None:
 			end = len(self.nodes) - 1
 
 		if end - start >= 3:
-			edges = self._generateEdges(start, start + (end - start) / 2)
-			edges.extend(self._generateEdges(start + (end - start) / 2 + 1, end))
-			return edges
+			self.generateEdges(start, start + (end - start) / 2)
+			self.generateEdges(start + (end - start) / 2 + 1, end)
 		elif end - start == 2:
-			return [
-				[self.nodes[start], self.nodes[start + 1]],
-				[self.nodes[start + 1], self.nodes[start + 2]],
-				[self.nodes[start + 2], self.nodes[start]]
-			]
+			self.edges.addEdge([self.nodes[start], self.nodes[start + 1]])
+			self.edges.addEdge([self.nodes[start + 1], self.nodes[start + 2]])
+			self.edges.addEdge([self.nodes[start + 2], self.nodes[start]])
 		else:
-			return [[self.nodes[start], self.nodes[start + 1]]]
+			self.edges.addEdge([self.nodes[start], self.nodes[start + 1]])
 
 	def notifyPlayers(self, emitter = None, message = None):
 		players = self.players
@@ -70,6 +80,18 @@ class game:
 			if emitter is None or players[playerId].id is not emitter.id:
 				players[playerId].write_message(message)
 
+class edgeList(dict):
+	def addEdge(self, edge):
+		keyStart = json.dumps(edge[0])
+		keyEnd = json.dumps(edge[1])
+		if keyStart not in self:
+			self[keyStart] = []
+
+		if keyEnd not in self:
+			self[keyEnd] = []
+
+		self[keyStart].append(edge[1])
+		self[keyEnd].append(edge[0])
 
 class collection(dict):
 	def __init__(self):

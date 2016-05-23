@@ -1,4 +1,4 @@
-loader.addModule('map', 'B', function (canvas, B) {
+loader.addModule('map', 'B', 'graph', function (B, graph) {
 	"use strict";
 
 	/**
@@ -10,13 +10,29 @@ loader.addModule('map', 'B', function (canvas, B) {
 	/**
 	 * Map construct. Build the level, set the objects and the frame information
 	 */
-	function Map (graph) {
+	function Map (mapData) {
 		var map = {
-			graph: graph
+			graph: graph(mapData)
 		};
 
 		map.update = function () {
 
+		};
+
+		/**
+		* Convert a set of pixels in the map projection and returns the coordinates
+		* of the cell in the grid
+		*/
+		function pixelsToCoords (coords) {
+			return {
+				x: ~~(coords.x / cellDimensions),
+				y: ~~(coords.y / cellDimensions)
+			};
+		}
+
+		map.click = function (coords) {
+			coords = pixelsToCoords(coords);
+			console.log(map.graph.getNode(coords));
 		};
 
 		map.draw = function (camera) {
