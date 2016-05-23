@@ -86,8 +86,8 @@ class game:
 
 class edgeList(dict):
 	def addEdge(self, edge):
-		keyStart = json.dumps(edge[0])
-		keyEnd = json.dumps(edge[1])
+		keyStart = json.dumps(edge[0], separators=(',', ':'))
+		keyEnd = json.dumps(edge[1], separators=(',', ':'))
 		if keyStart not in self:
 			self[keyStart] = []
 
