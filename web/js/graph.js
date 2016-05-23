@@ -32,18 +32,26 @@ function (canvas, B) {
 		}
 
 		graph.draw = function (camera, gridCellSize) {
-			var owner;
+			var owner, e, start;
 			canvasContext.beginPath();
-			graph.edges.forEach(function (edge) {
-				var coordsStart = camera.adapt(
-						adaptCoordToGridCellSize(edge[0], gridCellSize)
-					),
-					coordsEnd = camera.adapt(
-						adaptCoordToGridCellSize(edge[1], gridCellSize)
-					);
-				canvasContext.moveTo(coordsStart.x, coordsStart.y);
-				canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
-			});
+			for (e in graph.edges) {
+				start = JSON.parse(e);
+				graph.edges[e].forEach(function (end) {
+					// edges contains all the edges in both ways, we
+					// need do draw only half of them. let's so draw
+					// only those starting with the smallest coordinates
+					if (start.x < end.x || start.x == end.x && start.y < end.y) {
+						var coordsStart = camera.adapt(
+								adaptCoordToGridCellSize(start, gridCellSize)
+							),
+							coordsEnd = camera.adapt(
+								adaptCoordToGridCellSize(end, gridCellSize)
+							);
+						canvasContext.moveTo(coordsStart.x, coordsStart.y);
+						canvasContext.lineTo(coordsEnd.x, coordsEnd.y);
+					}
+				});
+			}
 			canvasContext.stroke();
 
 			graph.nodes.forEach(function (node) {
