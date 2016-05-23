@@ -80,11 +80,11 @@ function (canvas, B) {
 		graph.getNeighbours = function (coords) {
 			var node = graph.getNode(coords);
 			if (!node) {
-				return null;
+				return [];
 			}
 
 			var key = JSON.stringify({x: coords.x, y: coords.y});
-			return graph.edges[key];
+			return graph.edges[key] || [];
 		};
 
 		return graph;
