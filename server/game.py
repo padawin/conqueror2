@@ -46,6 +46,8 @@ class game:
 		self.currentPlayer = 0
 		return self.playerIds
 
+	def conquerNode(self, node, playerIndex):
+		self.nodesGrid[node['x']][node['y']]['owned_by'] = playerIndex
 
 	def generateNodes(self, nbNodes, maxWidth, maxHeight):
 		self.nodesGrid = [
