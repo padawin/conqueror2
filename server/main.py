@@ -83,7 +83,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				}
 			)
 		elif message['messageType'] == 'CAPTURED_NODE':
-			if self.game.playerIds[message['playerId']] == self.id:
+			if self.game.currentPlayer == message['playerId'] and self.game.playerIds[message['playerId']] == self.id:
 				if self.game.conquerNode(message['node'], message['playerId']):
 					self.game.notifyPlayers(
 						message={
