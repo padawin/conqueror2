@@ -190,6 +190,10 @@ function (B, canvas, camera, screenSize, map) {
 					console.log('your turn');
 					currentState = STATES.GAME_ON_WAIT_TO_PLAY;
 					break;
+				case 'PLAYER_TURN_FINISHED':
+					console.log('end of turn');
+					currentState = STATES.GAME_ON_WAIT_FOR_TURN;
+					break;
 				case 'GAME_MAP':
 					console.log('map received');
 					currentState = STATES.GAME_ON_WAIT_FOR_TURN;

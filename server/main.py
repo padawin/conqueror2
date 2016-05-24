@@ -92,6 +92,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 						}
 					}
 				)
+				self.game.endTurn()
 
 	def on_close(self):
 		if self.id in clients:

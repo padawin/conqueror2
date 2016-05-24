@@ -46,6 +46,19 @@ class game:
 		self.currentPlayer = 0
 		return self.playerIds
 
+	def endTurn(self):
+		self.notifyPlayerEndTurn()
+		self.currentPlayer = (self.currentPlayer + 1) % len(self.playerIds)
+		self.notifyNextPlayerTurn()
+
+	def notifyPlayerEndTurn(self):
+		self.players[self.playerIds[self.currentPlayer]].write_message(
+			{
+				'type': 'PLAYER_TURN_FINISHED',
+				'message': u'Turn finished'
+			}
+		)
+
 	def notifyNextPlayerTurn(self):
 		self.players[self.playerIds[self.currentPlayer]].write_message(
 			{
