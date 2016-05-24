@@ -56,12 +56,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 						}
 					}
 				)
-				gameInstance.players[playersOrder[0]].write_message(
-					{
-						'type': 'PLAYER_TURN',
-						'message': u'Your turn to start'
-					}
-				)
+
+				gameInstance.notifyNextPlayerTurn()
 		else:
 			gameInstance = openGames.createGame(self)
 

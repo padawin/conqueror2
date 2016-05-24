@@ -46,6 +46,14 @@ class game:
 		self.currentPlayer = 0
 		return self.playerIds
 
+	def notifyNextPlayerTurn(self):
+		self.players[self.playerIds[self.currentPlayer]].write_message(
+			{
+				'type': 'PLAYER_TURN',
+				'message': u'Your turn to start'
+			}
+		)
+
 	def conquerNode(self, node, playerIndex):
 		neighbours = self.edges.getEdgesFromNode(node)
 		nbAlliedNeighbours = 0
