@@ -34,9 +34,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 			if not gameInstance.hasFreeSlot():
 				gameInstance.initialisePlayers()
-				firstPlayer = gameInstance.defineFirstPlayer()
+				playersOrder = gameInstance.definePlayersOrder()
 				fullGames.addGame(gameInstance)
 				openGames.deleteGame(gameInstance)
+
+				for key, playerId in enumerate(playersOrder):
+					gameInstance.players[playerId].write_message(
+						{
+							'type': 'PLAYER_ID',
+							'message': key
+						}
+					)
 
 				gameInstance.notifyPlayers(
 					message={
@@ -48,12 +56,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 						}
 					}
 				)
-				firstPlayer.write_message(
-					{
-						'type': 'PLAYER_TURN',
-						'message': u'Your turn to start'
-					}
-				)
+
+				gameInstance.notifyNextPlayerTurn()
 		else:
 			gameInstance = openGames.createGame(self)
 
@@ -74,6 +78,21 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					'message': u'%s joined' % self.id
 				}
 			)
+		elif message['messageType'] == 'CAPTURED_NODE':
+			isCurrentPlayer = self.game.currentPlayer == message['playerId']
+			hasGoodPlayerIndex = self.game.playerIds[message['playerId']] == self.id
+			if isCurrentPlayer and hasGoodPlayerIndex and self.game.conquerNode(message['node'], message['playerId']):
+				self.game.notifyPlayers(
+					message={
+						'type': 'GAME_MAP',
+						'map': {
+							'nodesGrid': self.game.nodesGrid,
+							'nodes': self.game.nodes,
+							'edges': self.game.edges
+						}
+					}
+				)
+				self.game.endTurn()
 
 	def on_close(self):
 		if self.id in clients:

@@ -25,7 +25,9 @@ function (B, canvas, camera, screenSize, map) {
 			GAME_ON_WAIT_FOR_TURN: 3,
 			GAME_FINISHED: 4
 		},
-		currentState;
+		currentState,
+		playerId,
+		ws;
 
 	/**
 	 * Method to adapt the canvas dimensions to the screen and the camera to the
@@ -146,7 +148,18 @@ function (B, canvas, camera, screenSize, map) {
 			}
 			else if (currentState == STATES.GAME_ON_WAIT_TO_PLAY) {
 				console.log('handle play click');
-				m.click(camera.toWorldCoords({x: mouseX, y: mouseY}));
+				var capturedNode = m.click(
+					playerId,
+					camera.toWorldCoords({x: mouseX, y: mouseY})
+				);
+
+				if (capturedNode) {
+					ws.send(JSON.stringify({
+						'messageType': 'CAPTURED_NODE',
+						'node': capturedNode,
+						'playerId': playerId
+					}));
+				}
 			}
 		});
 	}
@@ -156,7 +169,7 @@ function (B, canvas, camera, screenSize, map) {
 	 */
 	function startGame () {
 		console.log('start game');
-		var ws = new WebSocket("ws://localhost:8888/ws");
+		ws = new WebSocket("ws://localhost:8888/ws");
 		ws.onopen = function(evt) {
 			ws.send(JSON.stringify({messageType: 'CLIENT_JOINED'}));
 		};
@@ -164,6 +177,9 @@ function (B, canvas, camera, screenSize, map) {
 			var data = JSON.parse(evt.data);
 			console.log(data);
 			switch (data.type) {
+				case 'PLAYER_ID':
+					playerId = data['message'];
+					break;
 				case 'PLAYER_JOINED':
 					console.log('player joined');
 					break;
@@ -173,6 +189,10 @@ function (B, canvas, camera, screenSize, map) {
 				case 'PLAYER_TURN':
 					console.log('your turn');
 					currentState = STATES.GAME_ON_WAIT_TO_PLAY;
+					break;
+				case 'PLAYER_TURN_FINISHED':
+					console.log('end of turn');
+					currentState = STATES.GAME_ON_WAIT_FOR_TURN;
 					break;
 				case 'GAME_MAP':
 					console.log('map received');

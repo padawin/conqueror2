@@ -30,9 +30,30 @@ loader.addModule('map', 'B', 'graph', function (B, graph) {
 			};
 		}
 
-		map.click = function (coords) {
+		map.click = function (playerId, coords) {
 			coords = pixelsToCoords(coords);
-			console.log(map.graph.getNode(coords));
+			var node = map.graph.getNode(coords),
+				neighbours,
+				nbAlliedNeighbours = 0, nbEnemyNeighbours = 0;
+
+			if (node && node.owned_by === null) {
+				neighbours = map.graph.getNeighbours(coords);
+				neighbours.forEach(function (neighbour) {
+					var neighbour = map.graph.getNode(neighbour);
+					if (neighbour.owned_by !== null) {
+						if (neighbour.owned_by === playerId) {
+							nbAlliedNeighbours++;
+						}
+						else {
+							nbEnemyNeighbours++;
+						}
+					}
+				});
+
+				return nbAlliedNeighbours > nbEnemyNeighbours ? coords : null;
+			}
+
+			return null;
 		};
 
 		map.draw = function (camera) {
