@@ -27,7 +27,8 @@ function (B, canvas, camera, screenSize, map) {
 		},
 		currentState,
 		playerId,
-		ws;
+		ws,
+		needsRefresh = true;
 
 	/**
 	 * Method to adapt the canvas dimensions to the screen and the camera to the
@@ -119,12 +120,15 @@ function (B, canvas, camera, screenSize, map) {
 			else if (currentState == STATES.GAME_ON_WAIT_FOR_PLAYER) {
 				drawWaitScreen();
 			}
-			else if (~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)) {
-				if (m) {
-					m.update();
-					camera.update();
-					drawGame();
-				}
+			else if (
+				~[STATES.GAME_ON_WAIT_FOR_TURN, STATES.GAME_ON_WAIT_TO_PLAY].indexOf(currentState)
+				&& needsRefresh
+				&& m
+			) {
+				m.update();
+				camera.update();
+				drawGame();
+				needsRefresh = false;
 			}
 		}
 	}
@@ -136,6 +140,7 @@ function (B, canvas, camera, screenSize, map) {
 		B.Events.on('mousedrag', null, function (vectorX, vectorY) {
 			camera.setPosition({x: camera.x - vectorX, y: camera.y - vectorY});
 			camera.setSubject();
+			needsRefresh = true;
 		});
 
 		/**
@@ -203,6 +208,8 @@ function (B, canvas, camera, screenSize, map) {
 					console.log('unknown message:');
 					console.log(data);
 			}
+
+			needsRefresh = true;
 		};
 		ws.onclose = function() {};
 	}
