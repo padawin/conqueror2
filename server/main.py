@@ -29,7 +29,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		clients[self.id] = {"id": self.id, "object": self}
 
 		if len(openGames.keys()) == 0:
-			gameInstance = openGames.createGame(self)
+			gameInstance = game.createGame(self)
+			openGames.addGame(gameInstance)
 		else:
 			gameInstance = openGames.getGame()
 			gameInstance.addPlayer(self)

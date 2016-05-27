@@ -8,6 +8,17 @@ import config
 
 MAX_PLAYER_PER_GAME = 2
 
+
+def createGame(player):
+	gameInstance = game()
+	gameInstance.generateNodes(
+		config.nbNodes, config.mapWidth, config.mapHeight
+	)
+	gameInstance.generateEdges()
+	gameInstance.addPlayer(player)
+	return gameInstance
+
+
 class game:
 	def __init__(self):
 		self.id = uuid.uuid4()
@@ -158,13 +169,3 @@ class collection(dict):
 			return self[self.keys()[0]]
 		else:
 			return self[gameId]
-
-	def createGame(self, player):
-		gameInstance = game()
-		gameInstance.generateNodes(
-			config.nbNodes, config.mapWidth, config.mapHeight
-		)
-		gameInstance.generateEdges()
-		gameInstance.addPlayer(player)
-		self[gameInstance.id] = gameInstance
-		return gameInstance
