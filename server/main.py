@@ -5,6 +5,7 @@ import tornado.websocket
 import uuid
 import json
 import game
+import graph
 
 from tornado.options import define, options, parse_command_line
 
@@ -28,7 +29,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.stream.set_nodelay(True)
 		clients[self.id] = {"id": self.id, "object": self}
 
-		if len(openGames.keys()) > 0:
+		if len(openGames.keys()) == 0:
+			gameInstance = game.createGame(self, graph.graph())
+			openGames.addGame(gameInstance)
+		else:
 			gameInstance = openGames.getGame()
 			gameInstance.addPlayer(self)
 
@@ -49,17 +53,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				gameInstance.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
-						'map': {
-							'nodesGrid': gameInstance.nodesGrid,
-							'nodes': gameInstance.nodes,
-							'edges': gameInstance.edges
-						}
+						'map': gameInstance.getSerializedGraph()
 					}
 				)
 
 				gameInstance.notifyNextPlayerTurn()
-		else:
-			gameInstance = openGames.createGame(self)
 
 		self.game = gameInstance
 
@@ -85,11 +83,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				self.game.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
-						'map': {
-							'nodesGrid': self.game.nodesGrid,
-							'nodes': self.game.nodes,
-							'edges': self.game.edges
-						}
+						'map': self.game.getSerializedGraph()
 					}
 				)
 				self.game.endTurn()
