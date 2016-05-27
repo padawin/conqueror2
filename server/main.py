@@ -52,11 +52,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				gameInstance.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
-						'map': {
-							'nodesGrid': gameInstance.nodesGrid,
-							'nodes': gameInstance.nodes,
-							'edges': gameInstance.edges
-						}
+						'map': gameInstance.getSerializedGraph()
 					}
 				)
 
@@ -86,11 +82,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				self.game.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
-						'map': {
-							'nodesGrid': self.game.nodesGrid,
-							'nodes': self.game.nodes,
-							'edges': self.game.edges
-						}
+						'map': self.game.getSerializedGraph()
 					}
 				)
 				self.game.endTurn()

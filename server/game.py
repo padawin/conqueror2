@@ -28,6 +28,13 @@ class game:
 		self.players = {}
 		self.playerIds = []
 
+	def getSerializedGraph(self):
+		return {
+			'nodes': self.nodes,
+			'nodesGrid': self.nodesGrid,
+			'edges': self.edges
+		}
+
 	def addPlayer(self, player):
 		if not self.hasFreeSlot():
 			raise OverflowError()
