@@ -8,7 +8,8 @@ MAX_PLAYER_PER_GAME = 2
 def createGame(player, graph):
 	gameInstance = game(graph)
 	gameInstance.graph.generateNodes(
-		config.nbNodes, config.mapWidth, config.mapHeight
+		config.nbNodes, config.mapWidth, config.mapHeight,
+		lambda: {'owned_by': None}
 	)
 	gameInstance.graph.generateEdges()
 	gameInstance.addPlayer(player)
@@ -51,8 +52,7 @@ class game:
 		random.shuffle(nodes)
 		for index, playerId in enumerate(self.playerIds):
 			node = nodes.pop(0)
-			# @TODO encapsulate in method
-			self.graph.nodesGrid[node['x']][node['y']]['owned_by'] = index
+			self.graph.getNode(node['x'], node['y'])['owned_by'] = index
 
 	def definePlayersOrder(self):
 		random.shuffle(self.playerIds)
@@ -95,8 +95,7 @@ class game:
 		if nbEnemyNeighbours >= nbAlliedNeighbours:
 			return False
 		else:
-			# @TODO encapsulate in method
-			self.graph.nodesGrid[node['x']][node['y']]['owned_by'] = playerIndex
+			self.graph.getNode(node['x'], node['y'])['owned_by'] = playerIndex
 			return True
 
 	def notifyPlayers(self, emitter = None, message = None):

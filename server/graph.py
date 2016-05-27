@@ -10,7 +10,10 @@ class graph:
 		self.nodesGrid = []
 		self.edges = edgeList()
 
-	def generateNodes(self, nbNodes, maxWidth, maxHeight):
+	def getNode(self, x, y):
+		return self.nodesGrid[x][y]
+
+	def generateNodes(self, nbNodes, maxWidth, maxHeight, nodeProcedure):
 		self.nodesGrid = [
 			[None for x in range(maxWidth)] for y in range(maxHeight)
 		]
@@ -18,7 +21,7 @@ class graph:
 			x = random.randint(0, maxWidth - 1)
 			y = random.randint(0, maxHeight - 1)
 
-			self.nodesGrid[x][y] = {'owned_by': None}
+			self.nodesGrid[x][y] = nodeProcedure()
 			node = collections.OrderedDict()
 			node['x'] = x
 			node['y'] = y
