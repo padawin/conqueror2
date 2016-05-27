@@ -28,7 +28,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.stream.set_nodelay(True)
 		clients[self.id] = {"id": self.id, "object": self}
 
-		if len(openGames.keys()) > 0:
+		if len(openGames.keys()) == 0:
+			gameInstance = openGames.createGame(self)
+		else:
 			gameInstance = openGames.getGame()
 			gameInstance.addPlayer(self)
 
@@ -58,8 +60,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				)
 
 				gameInstance.notifyNextPlayerTurn()
-		else:
-			gameInstance = openGames.createGame(self)
 
 		self.game = gameInstance
 
