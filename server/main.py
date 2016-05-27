@@ -5,6 +5,7 @@ import tornado.websocket
 import uuid
 import json
 import game
+import graph
 
 from tornado.options import define, options, parse_command_line
 
@@ -29,7 +30,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		clients[self.id] = {"id": self.id, "object": self}
 
 		if len(openGames.keys()) == 0:
-			gameInstance = game.createGame(self)
+			gameInstance = game.createGame(self, graph.graph())
 			openGames.addGame(gameInstance)
 		else:
 			gameInstance = openGames.getGame()
