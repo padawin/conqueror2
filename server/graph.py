@@ -39,14 +39,52 @@ class graph:
 			end = len(self.nodes) - 1
 
 		if end - start >= 3:
-			self.generateEdges(start, start + int((end - start) / 2))
-			self.generateEdges(start + int((end - start) / 2) + 1, end)
+			hull1 = self.generateEdges(start, start + int((end - start) / 2))
+			hull2 = self.generateEdges(start + int((end - start) / 2) + 1, end)
+			# @TODO merge the 2 hulls
+			hull = dict()
 		elif end - start == 2:
-			self.edges.addEdge(self.nodes[start], self.nodes[start + 1])
-			self.edges.addEdge(self.nodes[start + 1], self.nodes[start + 2])
-			self.edges.addEdge(self.nodes[start + 2], self.nodes[start])
+			node1 = self.nodes[start]
+			node2 = self.nodes[start + 1]
+			node3 = self.nodes[start + 2]
+			self.edges.addEdge(node1, node2)
+			self.edges.addEdge(node2, node3)
+			self.edges.addEdge(node3, node1)
+			hull = self.generateHull(node1, node2, node3)
 		else:
-			self.edges.addEdge(self.nodes[start], self.nodes[start + 1])
+			node1 = self.nodes[start]
+			node2 = self.nodes[start + 1]
+			self.edges.addEdge(node1, node2)
+			hull = self.generateHull(node1, node2)
+
+		return hull
+
+	# the nodes are expected to be ordered on theiy x, then y
+	def generateHull(self, node1, node2, node3=None):
+		# given a node of the hull, we can get 2 other nodes, its neighbours
+		# the first neighbour is the clockwise neighbour and the second one is
+		# the counter clockwise neighbour
+		node1Key = '%d-%d' % (node1['x'], node1['y'])
+		node2Key = '%d-%d' % (node2['x'], node2['y'])
+		hull = {
+			node1Key: [node2],
+			node2Key: [node1]
+		}
+
+		if node3 is not None:
+			node3Key = '%d-%d' % (node3['x'], node3['y'])
+			side = (node2['x'] - node1['x']) * (node3['y'] - node1['y']) - (node3['x'] - node1['x']) * (node2['y'] - node1['y'])
+			# left
+			if side > 0:
+				hull[node1Key].insert(0, node3)
+				hull[node2Key].append(node3)
+			# right or aligned
+			else:
+				hull[node1Key].append(node3)
+				hull[node2Key].insert(0, node3)
+
+		return hull
+
 
 class edgeList(dict):
 	def addEdge(self, start, end):
