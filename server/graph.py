@@ -64,15 +64,15 @@ class graph:
 		# given a node of the hull, we can get 2 other nodes, its neighbours
 		# the first neighbour is the clockwise neighbour and the second one is
 		# the counter clockwise neighbour
-		node1Key = '%d-%d' % (node1['x'], node1['y'])
-		node2Key = '%d-%d' % (node2['x'], node2['y'])
+		node1Key = self.getNodeKey(node1)
+		node2Key = self.getNodeKey(node2)
 		hull = {
 			node1Key: [node2],
 			node2Key: [node1]
 		}
 
 		if node3 is not None:
-			node3Key = '%d-%d' % (node3['x'], node3['y'])
+			node3Key = self.getNodeKey(node3)
 			side = (node2['x'] - node1['x']) * (node3['y'] - node1['y']) - (node3['x'] - node1['x']) * (node2['y'] - node1['y'])
 			# left
 			if side > 0:
@@ -84,6 +84,9 @@ class graph:
 				hull[node2Key].insert(0, node3)
 
 		return hull
+
+	def getNodeKey(self, node):
+		return '%d-%d' % (node['x'], node['y'])
 
 
 class edgeList(dict):
