@@ -91,6 +91,9 @@ class convexHull(dict):
 	def getSideOfNodeFromEdge(self, edge, node):
 		'''
 		The edge is oriented (goes from edge[0] to edge[1])
+		if the result is < 0, the node is at the right of the edge
+		if the result is = 0, the node and the edge are aligned
+		if the result is > 0, the node is at the left of the edge
 		'''
 		xEdge = edge[1]['x'] - edge[0]['x']
 		yEdge = edge[1]['y'] - edge[0]['y']
