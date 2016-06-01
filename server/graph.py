@@ -103,7 +103,7 @@ class convexHull(dict):
 
 	@staticmethod
 	def getNodeKey(node):
-		return '%d-%d' % (node['x'], node['y'])
+		return '{}-{}'.format(node['x'], node['y'])
 
 
 class edgeList(dict):
