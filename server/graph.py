@@ -71,13 +71,13 @@ class convexHull(dict):
 		# given a node of the hull, we can get 2 other nodes, its neighbours
 		# the first neighbour is the clockwise neighbour and the second one is
 		# the counter clockwise neighbour
-		node1Key = self.getNodeKey(node1)
-		node2Key = self.getNodeKey(node2)
+		node1Key = convexHull.getNodeKey(node1)
+		node2Key = convexHull.getNodeKey(node2)
 		self[node1Key] = [node2]
 		self[node2Key] = [node1]
 
 		if node3 is not None:
-			node3Key = self.getNodeKey(node3)
+			node3Key = convexHull.getNodeKey(node3)
 			side = self.getSideOfNodeFromEdge([node1, node2], node3)
 			# left
 			if side > 0:
@@ -101,7 +101,8 @@ class convexHull(dict):
 		yDistFromEdge = node['y'] - edge[0]['y']
 		return xEdge * yDistFromEdge - xDistFromEdge * yEdge
 
-	def getNodeKey(self, node):
+	@staticmethod
+	def getNodeKey(node):
 		return '%d-%d' % (node['x'], node['y'])
 
 
