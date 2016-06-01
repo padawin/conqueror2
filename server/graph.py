@@ -61,29 +61,32 @@ class graph:
 
 	# the nodes are expected to be ordered on theiy x, then y
 	def generateHull(self, node1, node2, node3=None):
+		hull = convexHull()
+		hull.generate(node1, node2, node3)
+		return hull
+
+
+class convexHull(dict):
+	def generate(self, node1, node2, node3=None):
 		# given a node of the hull, we can get 2 other nodes, its neighbours
 		# the first neighbour is the clockwise neighbour and the second one is
 		# the counter clockwise neighbour
 		node1Key = self.getNodeKey(node1)
 		node2Key = self.getNodeKey(node2)
-		hull = {
-			node1Key: [node2],
-			node2Key: [node1]
-		}
+		self[node1Key] = [node2]
+		self[node2Key] = [node1]
 
 		if node3 is not None:
 			node3Key = self.getNodeKey(node3)
 			side = (node2['x'] - node1['x']) * (node3['y'] - node1['y']) - (node3['x'] - node1['x']) * (node2['y'] - node1['y'])
 			# left
 			if side > 0:
-				hull[node1Key].insert(0, node3)
-				hull[node2Key].append(node3)
+				self[node1Key].insert(0, node3)
+				self[node2Key].append(node3)
 			# right or aligned
 			else:
-				hull[node1Key].append(node3)
-				hull[node2Key].insert(0, node3)
-
-		return hull
+				self[node1Key].append(node3)
+				self[node2Key].insert(0, node3)
 
 	def getNodeKey(self, node):
 		return '%d-%d' % (node['x'], node['y'])
