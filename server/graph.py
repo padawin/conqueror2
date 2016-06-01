@@ -78,7 +78,7 @@ class convexHull(dict):
 
 		if node3 is not None:
 			node3Key = self.getNodeKey(node3)
-			side = (node2['x'] - node1['x']) * (node3['y'] - node1['y']) - (node3['x'] - node1['x']) * (node2['y'] - node1['y'])
+			side = self.getSideOfNodeFromEdge([node1, node2], node3)
 			# left
 			if side > 0:
 				self[node1Key].insert(0, node3)
@@ -87,6 +87,16 @@ class convexHull(dict):
 			else:
 				self[node1Key].append(node3)
 				self[node2Key].insert(0, node3)
+
+	def getSideOfNodeFromEdge(self, edge, node):
+		'''
+		The edge is oriented (goes from edge[0] to edge[1])
+		'''
+		xEdge = edge[1]['x'] - edge[0]['x']
+		yEdge = edge[1]['y'] - edge[0]['y']
+		xDistFromEdge = node['x'] - edge[0]['x']
+		yDistFromEdge = node['y'] - edge[0]['y']
+		return xEdge * yDistFromEdge - xDistFromEdge * yEdge
 
 	def getNodeKey(self, node):
 		return '%d-%d' % (node['x'], node['y'])
