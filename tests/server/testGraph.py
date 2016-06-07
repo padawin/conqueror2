@@ -31,3 +31,20 @@ class graphTests(tests.common.common):
 
 		self.assertEquals(nbNone, graphWidth * graphHeight - nodesNumber)
 		self.assertEquals(nbNodes, nodesNumber)
+
+	def test_edgeList_get_node_key(self):
+		node = {'x': 1, 'y': 2}
+		key = graph.edgeList.getNodeKey(node)
+		self.assertEquals(key, '{"x":1,"y":2}')
+
+		node = {'y': 1, 'x': 2}
+		key = graph.edgeList.getNodeKey(node)
+		self.assertEquals(key, '{"x":2,"y":1}')
+
+		node = {'y': 1, 'foo': 2}
+		with self.assertRaises(KeyError):
+			graph.edgeList.getNodeKey(node)
+
+		node = {'foo': 1, 'x': 2}
+		with self.assertRaises(KeyError):
+			graph.edgeList.getNodeKey(node)
