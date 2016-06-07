@@ -63,30 +63,3 @@ class edgeList(dict):
 		tmp['y'] = node['y']
 		key = json.dumps(tmp, separators=(',', ':'))
 		return self[key]
-
-class collection(dict):
-	def __init__(self):
-		super(collection, self).__init__()
-
-	def deleteGame(self, gameInstance):
-		del self[gameInstance.id]
-
-	def addGame(self, gameInstance):
-		self[gameInstance.id] = gameInstance
-
-	def getGame(self, gameId=None):
-		# return the first available
-		if gameId is None:
-			return self[self.keys()[0]]
-		else:
-			return self[gameId]
-
-	def createGame(self, player):
-		gameInstance = game()
-		gameInstance.generateNodes(
-			config.nbNodes, config.mapWidth, config.mapHeight
-		)
-		gameInstance.generateEdges()
-		gameInstance.addPlayer(player)
-		self[gameInstance.id] = gameInstance
-		return gameInstance
