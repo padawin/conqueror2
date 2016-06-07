@@ -17,10 +17,14 @@ class graph:
 		self.nodesGrid = [
 			[None for x in range(maxWidth)] for y in range(maxHeight)
 		]
+		rows = [i for i in range(maxHeight)]
+		cols = [i for i in range(maxWidth)]
+		random.shuffle(rows)
+		random.shuffle(cols)
 		while nbNodes > 0:
-			x = random.randint(0, maxWidth - 1)
-			y = random.randint(0, maxHeight - 1)
-
+			index = nbNodes - 1
+			x = cols[index]
+			y = rows[index]
 			self.nodesGrid[x][y] = nodeProcedure()
 			node = collections.OrderedDict()
 			node['x'] = x
