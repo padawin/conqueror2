@@ -3,6 +3,7 @@ import unittest
 
 from server import graph
 import tests.common
+from collections import OrderedDict
 
 
 class graphTests(tests.common.common):
@@ -31,6 +32,27 @@ class graphTests(tests.common.common):
 
 		self.assertEquals(nbNone, graphWidth * graphHeight - nodesNumber)
 		self.assertEquals(nbNodes, nodesNumber)
+
+	def test_getNode(self):
+		g = graph.graph()
+		g.nodes = [
+			OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 1), ('y', 1)]),
+			OrderedDict([('x', 2), ('y', 3)]), OrderedDict([('x', 3), ('y', 2)]),
+			OrderedDict([('x', 4), ('y', 0)])
+		]
+		g.nodesGrid = [
+			[None, None, None, None, {'owned_by': None}],
+			[None, {'owned_by': None}, None, None, None],
+			[None, None, None, {'owned_by': None}, None],
+			[None, None, {'owned_by': None}, None, None],
+			[{'owned_by': None}, None, None, None, None]
+		]
+
+		self.assertEquals(g.getNode(2, 3), {'owned_by': None})
+		self.assertEquals(g.getNode(0, 0), None)
+
+		with self.assertRaises(IndexError):
+			g.getNode(7, 3)
 
 	def test_edgeList_get_node_key(self):
 		node = {'x': 1, 'y': 2}
