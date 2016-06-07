@@ -50,8 +50,8 @@ class graph:
 
 class edgeList(dict):
 	def addEdge(self, edge):
-		keyStart = json.dumps(edge[0], separators=(',', ':'))
-		keyEnd = json.dumps(edge[1], separators=(',', ':'))
+		keyStart = edgeList.getNodeKey(edge[0])
+		keyEnd = edgeList.getNodeKey(edge[1])
 		if keyStart not in self:
 			self[keyStart] = []
 
@@ -62,8 +62,12 @@ class edgeList(dict):
 		self[keyEnd].append(edge[0])
 
 	def getEdgesFromNode(self, node):
+		key = edgeList.getNodeKey(node)
+		return self[key]
+
+	@staticmethod
+	def getNodeKey(node):
 		tmp = collections.OrderedDict()
 		tmp['x'] = node['x']
 		tmp['y'] = node['y']
-		key = json.dumps(tmp, separators=(',', ':'))
-		return self[key]
+		return json.dumps(tmp, separators=(',', ':'))
