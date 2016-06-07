@@ -48,3 +48,38 @@ class graphTests(tests.common.common):
 		node = {'foo': 1, 'x': 2}
 		with self.assertRaises(KeyError):
 			graph.edgeList.getNodeKey(node)
+
+	def test_edgeList_addEdge(self):
+		el = graph.edgeList()
+		node1 = {'x': 0, 'y': 0}
+		node2 = {'x': 1, 'y': 0}
+		node3 = {'x': 1, 'y': 1}
+		node4 = {'x': 0, 'y': 1}
+
+		self.assertEquals(el, {})
+		el.addEdge(node1, node2)
+		self.assertEquals(el, {
+			'{"x":0,"y":0}': [node2],
+			'{"x":1,"y":0}': [node1]
+		})
+
+		el.addEdge(node2, node3)
+		self.assertEquals(el, {
+			'{"x":0,"y":0}': [node2],
+			'{"x":1,"y":0}': [node1, node3],
+			'{"x":1,"y":1}': [node2]
+		})
+		el.addEdge(node3, node4)
+		self.assertEquals(el, {
+			'{"x":0,"y":0}': [node2],
+			'{"x":1,"y":0}': [node1, node3],
+			'{"x":1,"y":1}': [node2, node4],
+			'{"x":0,"y":1}': [node3]
+		})
+		el.addEdge(node4, node1)
+		self.assertEquals(el, {
+			'{"x":0,"y":0}': [node2, node4],
+			'{"x":1,"y":0}': [node1, node3],
+			'{"x":1,"y":1}': [node2, node4],
+			'{"x":0,"y":1}': [node3, node1]
+		})
