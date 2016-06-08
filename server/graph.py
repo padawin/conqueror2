@@ -137,3 +137,7 @@ class edgeList(dict):
 		tmp['x'] = node['x']
 		tmp['y'] = node['y']
 		return json.dumps(tmp, separators=(',', ':'))
+
+
+class exception(BaseException):
+	pass
