@@ -61,9 +61,15 @@ class edgeList(dict):
 		self[keyStart].append(end)
 		self[keyEnd].append(start)
 
+		self.orderNodes(keyStart)
+		self.orderNodes(keyEnd)
+
 	def getEdgesFromNode(self, node):
 		key = edgeList.getNodeKey(node)
 		return self[key]
+
+	def orderNodes(self, index):
+		self[index] = sorted(self[index], key=operator.itemgetter('x', 'y'))
 
 	@staticmethod
 	def getNodeKey(node):
