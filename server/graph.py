@@ -39,8 +39,8 @@ class graph:
 			end = len(self.nodes) - 1
 
 		if end - start >= 3:
-			self.generateEdges(start, start + (end - start) / 2)
-			self.generateEdges(start + (end - start) / 2 + 1, end)
+			self.generateEdges(start, start + int((end - start) / 2))
+			self.generateEdges(start + int((end - start) / 2) + 1, end)
 		elif end - start == 2:
 			self.edges.addEdge(self.nodes[start], self.nodes[start + 1])
 			self.edges.addEdge(self.nodes[start + 1], self.nodes[start + 2])
