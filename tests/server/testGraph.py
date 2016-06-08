@@ -95,13 +95,13 @@ class graphTests(tests.common.common):
 		self.assertEquals(el, {
 			'{"x":0,"y":0}': [node2],
 			'{"x":1,"y":0}': [node1, node3],
-			'{"x":1,"y":1}': [node2, node4],
+			'{"x":1,"y":1}': [node4, node2],
 			'{"x":0,"y":1}': [node3]
 		})
 		el.addEdge(node4, node1)
 		self.assertEquals(el, {
-			'{"x":0,"y":0}': [node2, node4],
+			'{"x":0,"y":0}': [node4, node2],
 			'{"x":1,"y":0}': [node1, node3],
-			'{"x":1,"y":1}': [node2, node4],
-			'{"x":0,"y":1}': [node3, node1]
+			'{"x":1,"y":1}': [node4, node2],
+			'{"x":0,"y":1}': [node1, node3]
 		})
