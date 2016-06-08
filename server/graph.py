@@ -41,8 +41,10 @@ class graph:
 		hull = None
 
 		if end - start >= 3:
-			hull1 = self.generateEdges(start, start + int((end - start) / 2))
-			hull2 = self.generateEdges(start + int((end - start) / 2) + 1, end)
+			rightHull1 = start + int((end - start) / 2)
+			leftHull2 = start + int((end - start) / 2) + 1
+			hull1 = self.generateEdges(start, rightHull1)
+			hull2 = self.generateEdges(leftHull2, end)
 			# @TODO merge the 2 hulls
 			hull = dict()
 		elif end - start == 2:
