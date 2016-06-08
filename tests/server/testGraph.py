@@ -106,6 +106,28 @@ class graphTests(tests.common.common):
 			'{"x":0,"y":1}': [node1, node3]
 		})
 
+	def test_edgeList_getEdgesFromNode(self):
+		el = graph.edgeList()
+		node1 = {'x': 0, 'y': 0}
+		node2 = {'x': 1, 'y': 0}
+		node3 = {'x': 1, 'y': 1}
+		node4 = {'x': 0, 'y': 1}
+
+		el.addEdge(node1, node2)
+		el.addEdge(node2, node3)
+		el.addEdge(node3, node4)
+		el.addEdge(node4, node1)
+
+		edgesNode1 = el.getEdgesFromNode(node1)
+		edgesNode2 = el.getEdgesFromNode(node2)
+		edgesNode3 = el.getEdgesFromNode(node3)
+		edgesNode4 = el.getEdgesFromNode(node4)
+
+		self.assertEquals(edgesNode1, [node4, node2])
+		self.assertEquals(edgesNode2, [node1, node3])
+		self.assertEquals(edgesNode3, [node4, node2])
+		self.assertEquals(edgesNode4, [node1, node3])
+
 	def test_generate_edges_2_nodes(self):
 		g = graph.graph()
 		g.nodes = [
