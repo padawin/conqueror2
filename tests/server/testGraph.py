@@ -173,3 +173,30 @@ class graphTests(tests.common.common):
 			'{"x":4,"y":3}': [OrderedDict([('x', 3), ('y', 2)])]
 		}
 		self.assertEquals(g.edges, expected)
+
+	def test_generate_edges_5_nodes(self):
+		g = graph.graph()
+		g.nodes = [
+			OrderedDict([('x', 0), ('y', 4)]),
+			OrderedDict([('x', 1), ('y', 1)]),
+			OrderedDict([('x', 3), ('y', 0)]),
+			OrderedDict([('x', 3), ('y', 2)]),
+			OrderedDict([('x', 4), ('y', 3)])
+		]
+		g.nodesGrid = [
+			[None, None, None, {'owned_by': None}, None],
+			[None, {'owned_by': None}, None, None, None],
+			[None, None, None, {'owned_by': None}, None],
+			[None, None, None, None, {'owned_by': None}],
+			[{'owned_by': None}, None, None, None, None]
+		]
+
+		g.generateEdges()
+		expected = {
+			'{"x":0,"y":4}': [OrderedDict([('x', 1), ('y', 1)]), OrderedDict([('x', 3), ('y', 0)])],
+			'{"x":1,"y":1}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 3), ('y', 0)])],
+			'{"x":3,"y":0}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 1), ('y', 1)])],
+			'{"x":3,"y":2}': [OrderedDict([('x', 4), ('y', 3)])],
+			'{"x":4,"y":3}': [OrderedDict([('x', 3), ('y', 2)])]
+		}
+		self.assertEquals(g.edges, expected)
