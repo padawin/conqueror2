@@ -38,6 +38,8 @@ class graph:
 		if end is None:
 			end = len(self.nodes) - 1
 
+		hull = None
+
 		if end - start >= 3:
 			hull1 = self.generateEdges(start, start + int((end - start) / 2))
 			hull2 = self.generateEdges(start + int((end - start) / 2) + 1, end)
@@ -51,7 +53,7 @@ class graph:
 			self.edges.addEdge(node2, node3)
 			self.edges.addEdge(node3, node1)
 			hull = self.generateHull(node1, node2, node3)
-		else:
+		elif end - start == 1:
 			node1 = self.nodes[start]
 			node2 = self.nodes[start + 1]
 			self.edges.addEdge(node1, node2)
