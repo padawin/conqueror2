@@ -128,6 +128,55 @@ class graphTests(tests.common.common):
 		self.assertEquals(edgesNode3, [node4, node2])
 		self.assertEquals(edgesNode4, [node1, node3])
 
+	def test_generate_hull_2_nodes(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 0},
+			{'x': 0, 'y': 1}
+		]
+
+		h.generate(nodes[0], nodes[1])
+
+		expected = {
+			'0-0': [nodes[1]],
+			'0-1': [nodes[0]]
+		}
+		self.assertEquals(dict(h), expected)
+
+	def test_generate_hull_3_nodes_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 1},
+			{'x': 1, 'y': 0},
+			{'x': 1, 'y': 1}
+		]
+
+		h.generate(nodes[0], nodes[1], nodes[2])
+
+		expected = {
+			'0-1': [nodes[1], nodes[2]],
+			'1-0': [nodes[2], nodes[0]],
+			'1-1': [nodes[0], nodes[1]]
+		}
+		self.assertEquals(dict(h), expected)
+
+	def test_generate_hull_3_nodes_counter_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 1},
+			{'x': 1, 'y': 0},
+			{'x': 0, 'y': 0}
+		]
+
+		h.generate(nodes[0], nodes[1], nodes[2])
+
+		expected = {
+			'0-0': [nodes[1], nodes[0]],
+			'0-1': [nodes[2], nodes[1]],
+			'1-0': [nodes[0], nodes[2]]
+		}
+		self.assertEquals(dict(h), expected)
+
 	def test_generate_edges_2_nodes(self):
 		g = graph.graph()
 		g.nodes = [
