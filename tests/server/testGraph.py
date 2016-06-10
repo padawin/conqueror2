@@ -128,6 +128,42 @@ class graphTests(tests.common.common):
 		self.assertEquals(edgesNode3, [node4, node2])
 		self.assertEquals(edgesNode4, [node1, node3])
 
+	def test_getSideOfNodeFromEdge_left(self):
+		edge = [
+			{'x': 0, 'y': 1},
+			{'x': 1, 'y': 0}
+		]
+		node = {'x': 0, 'y': 0}
+		side = graph.convexHull.getSideOfNodeFromEdge(edge, node)
+		self.assertGreater(side, 0)
+
+	def test_getSideOfNodeFromEdge_right(self):
+		edge = [
+			{'x': 0, 'y': 1},
+			{'x': 1, 'y': 0}
+		]
+		node = {'x': 1, 'y': 1}
+		side = graph.convexHull.getSideOfNodeFromEdge(edge, node)
+		self.assertLess(side, 0)
+
+	def test_getSideOfNodeFromEdge_aligned_after(self):
+		edge = [
+			{'x': 0, 'y': 0},
+			{'x': 1, 'y': 0}
+		]
+		node = {'x': 2, 'y': 0}
+		side = graph.convexHull.getSideOfNodeFromEdge(edge, node)
+		self.assertEquals(side, 0)
+
+	def test_getSideOfNodeFromEdge_aligned_before(self):
+		edge = [
+			{'x': 0, 'y': 0},
+			{'x': 1, 'y': 0}
+		]
+		node = {'x': -1, 'y': 0}
+		side = graph.convexHull.getSideOfNodeFromEdge(edge, node)
+		self.assertEquals(side, 0)
+
 	def test_generate_hull_2_nodes(self):
 		h = graph.convexHull()
 		nodes = [
