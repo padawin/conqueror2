@@ -82,7 +82,7 @@ class convexHull(dict):
 
 		if node3 is not None:
 			node3Key = convexHull.getNodeKey(node3)
-			side = self.getSideOfNodeFromEdge([node1, node2], node3)
+			side = convexHull.getSideOfNodeFromEdge([node1, node2], node3)
 			# left
 			if side > 0:
 				self[node1Key].insert(0, node3)
@@ -94,7 +94,8 @@ class convexHull(dict):
 				self[node2Key].insert(0, node3)
 				self[node3Key] = [node1, node2]
 
-	def getSideOfNodeFromEdge(self, edge, node):
+	@staticmethod
+	def getSideOfNodeFromEdge(edge, node):
 		'''
 		The edge is oriented (goes from edge[0] to edge[1])
 		if the result is < 0, the node is at the right of the edge
