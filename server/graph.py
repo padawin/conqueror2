@@ -87,10 +87,12 @@ class convexHull(dict):
 			if side > 0:
 				self[node1Key].insert(0, node3)
 				self[node2Key].append(node3)
+				self[node3Key] = [node2, node1]
 			# right or aligned
 			else:
 				self[node1Key].append(node3)
 				self[node2Key].insert(0, node3)
+				self[node3Key] = [node1, node2]
 
 	def getSideOfNodeFromEdge(self, edge, node):
 		'''
