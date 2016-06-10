@@ -164,6 +164,15 @@ class graphTests(tests.common.common):
 		side = graph.convexHull.getSideOfNodeFromEdge(edge, node)
 		self.assertEquals(side, 0)
 
+	def test_getNodeKey_hull_node_ok(self):
+		node = {'x': 1, 'y': 2}
+		self.assertEquals('1-2', graph.convexHull.getNodeKey(node))
+
+	def test_getNodeKey_hull_node_ko(self):
+		node = {'foo': 1}
+		with self.assertRaises(KeyError):
+			graph.convexHull.getNodeKey(node)
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
