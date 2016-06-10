@@ -101,10 +101,12 @@ class convexHull(dict):
 		if the result is = 0, the node and the edge are aligned
 		if the result is > 0, the node is at the left of the edge
 		'''
+		# canvas's y starts at the top, we then need to multiply the y
+		# to -1 to invert it
 		xEdge = edge[1]['x'] - edge[0]['x']
-		yEdge = edge[1]['y'] - edge[0]['y']
+		yEdge = -1 * (edge[1]['y'] - edge[0]['y'])
 		xDistFromEdge = node['x'] - edge[0]['x']
-		yDistFromEdge = node['y'] - edge[0]['y']
+		yDistFromEdge = -1 * (node['y'] - edge[0]['y'])
 		return xEdge * yDistFromEdge - xDistFromEdge * yEdge
 
 	@staticmethod
