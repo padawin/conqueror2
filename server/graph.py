@@ -114,6 +114,10 @@ class convexHull(dict):
 	def getNodeKey(node):
 		return '{}-{}'.format(node['x'], node['y'])
 
+	def getNextNode(self, node, clockwise):
+		key = self.getNodeKey(node)
+		return self[key][0 if len(self[key]) == 1 or clockwise else 1]
+
 
 class edgeList(dict):
 	def addEdge(self, start, end):

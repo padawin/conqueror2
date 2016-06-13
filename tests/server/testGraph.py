@@ -173,6 +173,56 @@ class graphTests(tests.common.common):
 		with self.assertRaises(KeyError):
 			graph.convexHull.getNodeKey(node)
 
+	def test_hull_getNextNode_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+
+		h['0-4'] = [nodes[1], nodes[2]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['2-3'] = [nodes[0], nodes[1]]
+
+		self.assertEquals(
+			h.getNextNode(nodes[0], clockwise=True),
+			nodes[1]
+		)
+		self.assertEquals(
+			h.getNextNode(nodes[1], clockwise=True),
+			nodes[2]
+		)
+		self.assertEquals(
+			h.getNextNode(nodes[2], clockwise=True),
+			nodes[0]
+		)
+
+	def test_hull_getNextNode_counter_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+
+		h['0-4'] = [nodes[1], nodes[2]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['2-3'] = [nodes[0], nodes[1]]
+
+		self.assertEquals(
+			h.getNextNode(nodes[0], clockwise=False),
+			nodes[2]
+		)
+		self.assertEquals(
+			h.getNextNode(nodes[1], clockwise=False),
+			nodes[0]
+		)
+		self.assertEquals(
+			h.getNextNode(nodes[2], clockwise=False),
+			nodes[1]
+		)
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
