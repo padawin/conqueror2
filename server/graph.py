@@ -118,6 +118,58 @@ class convexHull(dict):
 		key = self.getNodeKey(node)
 		return self[key][0 if len(self[key]) == 1 or clockwise else 1]
 
+	def isLowerTangent(self, edge):
+		'''
+		Means the hull is at the left of the edge
+		'''
+		tangent = self.isTangent(edge)
+		return tangent is not None and tangent == 1
+
+	def isUpperTangent(self, edge):
+		'''
+		Means the hull is at the right of the edge
+		'''
+		tangent = self.isTangent(edge)
+		return tangent is not None and tangent == -1
+
+	def isTangent(self, edge):
+		'''
+		Returns None if none of the edge's extremities belong to the hull
+		Returns 0 if the edge is not a tangent to the hull
+		Returns -1 if the edge is a tangent and the hull is at the right of the edge
+		Returns 1 if the edge is a tangent and the hull is at the left of the edge
+		'''
+
+		node1Key = self.getNodeKey(edge[0])
+		node2Key = self.getNodeKey(edge[1])
+		# figure out which node of the edge is in the hull
+		# left most edge is in hull
+		if node1Key in self:
+			nodeKey = node1Key
+		# right most edge is in hull
+		elif node2Key in self:
+			nodeKey = node2Key
+		else:
+			return None
+
+		# test the 2 neighbours
+		sideNeighbourCW = convexHull.getSideOfNodeFromEdge(edge, self[nodeKey][0])
+		# get the sign of the value
+		sideNeighbourCW = (sideNeighbourCW > 0) - (sideNeighbourCW < 0)
+
+		sideNeighbourCCW = None
+		if len(self[nodeKey]) == 2:
+			sideNeighbourCCW = convexHull.getSideOfNodeFromEdge(
+				edge, self[nodeKey][1]
+			)
+			sideNeighbourCCW = (sideNeighbourCCW > 0) - (sideNeighbourCCW < 0)
+
+
+		if sideNeighbourCCW is None or sideNeighbourCW == sideNeighbourCCW:
+			return sideNeighbourCW
+		else:
+			return 0
+
 
 class edgeList(dict):
 	def addEdge(self, start, end):

@@ -223,6 +223,78 @@ class graphTests(tests.common.common):
 			nodes[1]
 		)
 
+	def test_hull_is_tangent(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+
+		h['0-4'] = [nodes[1], nodes[2]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['2-3'] = [nodes[0], nodes[1]]
+
+		edge1 = [{'x': 2, 'y': 3}, {'x': 4, 'y': 0}]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [{'x': 0, 'y': 2}, {'x': 1, 'y': 1}]
+		# -1 == tangent and hull at the right of the edge
+		self.assertEquals(h.isTangent(edge1), -1)
+
+		edge1 = [{'x': 1, 'y': 4}, {'x': 7, 'y': 2}]
+		# None == none of the nodes of the edge belong to the hull
+		self.assertEquals(h.isTangent(edge1), None)
+
+		edge1 = [{'x': 1, 'y': 1}, {'x': 1, 'y': 4}]
+		# 0 == not tangent
+		self.assertEquals(h.isTangent(edge1), 0)
+
+		# in those cases, an edge of the hull is considered as not tangent to
+		# the hull
+		edge1 = [nodes[1], nodes[2]]
+		# 0 == not tangent
+		self.assertEquals(h.isTangent(edge1), 0)
+
+	def test_hull_isLowerTangent(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+
+		h['0-4'] = [nodes[1], nodes[2]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['2-3'] = [nodes[0], nodes[1]]
+
+		edge1 = [{'x': 2, 'y': 3}, {'x': 4, 'y': 0}]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isLowerTangent(edge1), True)
+		edge1 = [{'x': 0, 'y': 2}, {'x': 1, 'y': 1}]
+		# -1 == tangent and hull at the right of the edge
+		self.assertEquals(h.isLowerTangent(edge1), False)
+
+	def test_hull_isUpperTangent(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+
+		h['0-4'] = [nodes[1], nodes[2]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['2-3'] = [nodes[0], nodes[1]]
+
+		edge1 = [{'x': 0, 'y': 2}, {'x': 1, 'y': 1}]
+		# -1 == tangent and hull at the right of the edge
+		self.assertEquals(h.isUpperTangent(edge1), True)
+		edge1 = [{'x': 2, 'y': 3}, {'x': 4, 'y': 0}]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isUpperTangent(edge1), False)
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
