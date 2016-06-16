@@ -164,9 +164,23 @@ class convexHull(dict):
 			)
 			sideNeighbourCCW = (sideNeighbourCCW > 0) - (sideNeighbourCCW < 0)
 
-
-		if sideNeighbourCCW is None or sideNeighbourCW == sideNeighbourCCW:
+		# edge aligned with the clockwork edge of the node
+		if sideNeighbourCW == 0:
+			if sideNeighbourCCW is None:
+				# the hull has one edge, and the side is 0 -> the hull's edge
+				# and the tested edge are parallel. Return an arbitrary tangent
+				# value
+				return 1
+			else:
+				# The edge is aligned with the node's clockwise edge. Rely on
+				# the node's counter clock wise edge
+				return sideNeighbourCCW
+		# one-edge hull not aligned with the edge, or hull with both edges at
+		# the same side of the edge, or edge aligned with the counter clockwise
+		# neighbour edge of the node
+		elif not sideNeighbourCCW or sideNeighbourCCW == sideNeighbourCW:
 			return sideNeighbourCW
+		# neighbour edges on each sides of the edge
 		else:
 			return 0
 
