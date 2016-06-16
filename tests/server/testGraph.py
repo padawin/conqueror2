@@ -355,6 +355,62 @@ class graphTests(tests.common.common):
 		# 1 == tangent and hull at the left of the edge
 		self.assertEquals(h.isUpperTangent(edge1), False)
 
+	def test_find_upper_tangent_between_hulls(self):
+		h1 = graph.convexHull()
+		h2 = graph.convexHull()
+		nodes1 = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+		h1['0-4'] = [nodes1[1], nodes1[2]]
+		h1['1-1'] = [nodes1[2], nodes1[0]]
+		h1['2-3'] = [nodes1[0], nodes1[1]]
+
+		nodes2 = [
+			{'x': 4, 'y': 2},
+			{'x': 6, 'y': 1},
+			{'x': 6, 'y': 4}
+		]
+		h2['4-2'] = [nodes2[1], nodes2[2]]
+		h2['6-1'] = [nodes2[2], nodes2[0]]
+		h2['6-4'] = [nodes2[0], nodes2[1]]
+
+		upperTangent = graph.convexHull.findTangent(
+			h1, h2,
+			nodes1[2], nodes2[0],
+			isUpperTangent=True
+		)
+		self.assertEquals(upperTangent, [nodes1[1], nodes2[1]])
+
+	def test_find_lower_tangent_between_hulls(self):
+		h1 = graph.convexHull()
+		h2 = graph.convexHull()
+		nodes1 = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1},
+			{'x': 2, 'y': 3}
+		]
+		h1['0-4'] = [nodes1[1], nodes1[2]]
+		h1['1-1'] = [nodes1[2], nodes1[0]]
+		h1['2-3'] = [nodes1[0], nodes1[1]]
+
+		nodes2 = [
+			{'x': 4, 'y': 2},
+			{'x': 6, 'y': 1},
+			{'x': 6, 'y': 4}
+		]
+		h2['4-2'] = [nodes2[1], nodes2[2]]
+		h2['6-1'] = [nodes2[2], nodes2[0]]
+		h2['6-4'] = [nodes2[0], nodes2[1]]
+
+		upperTangent = graph.convexHull.findTangent(
+			h1, h2,
+			nodes1[2], nodes2[0],
+			isUpperTangent=False
+		)
+		self.assertEquals(upperTangent, [nodes1[0], nodes2[2]])
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
