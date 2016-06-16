@@ -223,6 +223,48 @@ class graphTests(tests.common.common):
 			nodes[1]
 		)
 
+	def test_flat_hull_is_tangent(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 4},
+			{'x': 1, 'y': 1}
+		]
+
+		h['0-4'] = [nodes[1]]
+		h['1-1'] = [nodes[0]]
+
+		edge1 = [nodes[0], nodes[1]]
+		# 1 == tangent and hull parallel of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [{'x':-1,'y':7}, nodes[0]]
+		# 1 == tangent and hull parallel of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [nodes[1], {'x':2,'y':-2}]
+		# 1 == tangent and hull parallel of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [nodes[0], {'x':2,'y':3}]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [nodes[1], {'x':1,'y':0}]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [{'x':1,'y':3}, nodes[1]]
+		# 1 == tangent and hull at the left of the edge
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [nodes[1], {'x':3,'y':2}]
+		# -1 == tangent and hull at the right of the edge
+		self.assertEquals(h.isTangent(edge1), -1)
+
+		edge1 = [nodes[0], {'x':0,'y':0}]
+		# -1 == tangent and hull at the right of the edge
+		self.assertEquals(h.isTangent(edge1), -1)
+
 	def test_hull_is_tangent(self):
 		h = graph.convexHull()
 		nodes = [
@@ -251,11 +293,29 @@ class graphTests(tests.common.common):
 		# 0 == not tangent
 		self.assertEquals(h.isTangent(edge1), 0)
 
-		# in those cases, an edge of the hull is considered as not tangent to
-		# the hull
 		edge1 = [nodes[1], nodes[2]]
-		# 0 == not tangent
-		self.assertEquals(h.isTangent(edge1), 0)
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), -1)
+
+		edge1 = [{'x': 0, 'y': -1}, nodes[2]]
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), -1)
+
+		edge1 = [nodes[1], {'x': 3, 'y': 5}]
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), -1)
+
+		edge1 = [nodes[0], nodes[2]]
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [{'x': -2, 'y': 5}, nodes[2]]
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), 1)
+
+		edge1 = [nodes[0], {'x': 2, 'y': 4}]
+		# -1 == hull at the right of the edge, edge cotangent with a side of the hull
+		self.assertEquals(h.isTangent(edge1), 1)
 
 	def test_hull_isLowerTangent(self):
 		h = graph.convexHull()
