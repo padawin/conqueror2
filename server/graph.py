@@ -114,6 +114,34 @@ class convexHull(dict):
 	def getNodeKey(node):
 		return '{}-{}'.format(node['x'], node['y'])
 
+	@staticmethod
+	def findTangent(hull1, hull2, rightMostPointHull1, leftMostPointHull2, isUpperTangent):
+		'''
+		find a point p1 in hull1 and a point p2 in hull2 such as [p1, p2] is a
+		tangent to hull1 and hull2
+		'''
+		callbackHull1 = hull1.isUpperTangent if isUpperTangent else hull1.isLowerTangent
+		callbackHull2 = hull2.isUpperTangent if isUpperTangent else hull2.isLowerTangent
+
+		# start edge, going from right most of hull1 to left most of hull2
+		tangent = [rightMostPointHull1, leftMostPointHull2]
+		while not callbackHull1(tangent) or not callbackHull2(tangent):
+			# the hull is not at the right of the top edge
+			while not callbackHull1(tangent):
+				# move the left extremity of the edge counter clock wise)
+				tangent[0] = hull1.getNextNode(
+					tangent[0], clockwise=(not isUpperTangent)
+				)
+
+			# the hull is not at the right of the top edge
+			while not callbackHull2(tangent):
+				# move the left extremity of the edge clock wise
+				tangent[1] = hull2.getNextNode(
+					tangent[1], clockwise=isUpperTangent
+				)
+
+		return tangent
+
 	def getNextNode(self, node, clockwise):
 		key = self.getNodeKey(node)
 		return self[key][0 if len(self[key]) == 1 or clockwise else 1]
