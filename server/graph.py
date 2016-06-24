@@ -148,6 +148,32 @@ class convexHull(dict):
 		key = self.getNodeKey(node)
 		return self[key][0 if len(self[key]) == 1 or clockwise else 1]
 
+	def _clean(self, fromNode, toNode, clockwise):
+		'''
+		It breaks a hull by removing the links between two points.
+		Makes the Hull unstable and breaks its integrity
+		'''
+		nodesDeleted = False
+		nodeKey = convexHull.getNodeKey(fromNode)
+		toNodeKey = convexHull.getNodeKey(toNode)
+		while not nodesDeleted or nodeKey != toNodeKey:
+			if len(self[nodeKey]) == 1:
+				index = 0
+				backIndex = None
+			elif clockwise:
+				index = 0
+				backIndex = 1
+			else:
+				index = 1
+				backIndex = 0
+
+			nextNode = self[nodeKey][index]
+			self[nodeKey][index] = None
+			nodeKey = convexHull.getNodeKey(nextNode)
+			if backIndex is not None:
+				self[nodeKey][backIndex] = None
+			nodesDeleted = True
+
 	def isLowerTangent(self, edge):
 		'''
 		Means the hull is at the left of the edge

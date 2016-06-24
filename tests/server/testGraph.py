@@ -411,6 +411,105 @@ class graphTests(tests.common.common):
 		)
 		self.assertEquals(upperTangent, [nodes1[0], nodes2[2]])
 
+	def test_clean_line_hull_one_node_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1}
+		]
+		h['0-2'] = [nodes[1]]
+		h['1-1'] = [nodes[0]]
+
+		h._clean(nodes[1], nodes[1], True)
+
+		expected = graph.convexHull()
+		expected['1-1'] = [None]
+		expected['0-2'] = [None]
+		self.assertEquals(h, expected)
+
+	def test_clean_line_hull_one_node_counter_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1}
+		]
+		h['0-2'] = [nodes[1]]
+		h['1-1'] = [nodes[0]]
+
+		h._clean(nodes[1], nodes[1], False)
+
+		expected = graph.convexHull()
+		expected['1-1'] = [None]
+		expected['0-2'] = [None]
+		self.assertEquals(h, expected)
+
+	def test_clean_hull_one_node_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+		#  012345
+		# 0...2..
+		# 1.1....
+		# 20...3.
+		# 3......
+		# 46..4..
+		# 5..5...
+		h['0-2'] = [nodes[1], nodes[6]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['3-0'] = [nodes[3], nodes[1]]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [nodes[6], nodes[4]]
+		h['0-4'] = [nodes[0], nodes[5]]
+
+		h._clean(nodes[3], nodes[4], True)
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[1], nodes[6]]
+		expected['1-1'] = [nodes[2], nodes[0]]
+		expected['3-0'] = [nodes[3], nodes[1]]
+		expected['4-2'] = [None, nodes[2]]
+		expected['3-4'] = [nodes[5], None]
+		expected['2-5'] = [nodes[6], nodes[4]]
+		expected['0-4'] = [nodes[0], nodes[5]]
+		self.assertEquals(h, expected)
+
+	def test_clean_hull_one_node_counter_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+		h['0-2'] = [nodes[1], nodes[6]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['3-0'] = [nodes[3], nodes[1]]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [nodes[6], nodes[4]]
+		h['0-4'] = [nodes[0], nodes[5]]
+
+		h._clean(nodes[4], nodes[3], False)
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[1], nodes[6]]
+		expected['1-1'] = [nodes[2], nodes[0]]
+		expected['3-0'] = [nodes[3], nodes[1]]
+		expected['4-2'] = [None, nodes[2]]
+		expected['3-4'] = [nodes[5], None]
+		expected['2-5'] = [nodes[6], nodes[4]]
+		expected['0-4'] = [nodes[0], nodes[5]]
+		self.assertEquals(h, expected)
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
