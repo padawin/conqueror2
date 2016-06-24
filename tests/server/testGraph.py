@@ -237,31 +237,31 @@ class graphTests(tests.common.common):
 		# 1 == tangent and hull parallel of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [{'x':-1,'y':7}, nodes[0]]
+		edge1 = [{'x': -1, 'y': 7}, nodes[0]]
 		# 1 == tangent and hull parallel of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [nodes[1], {'x':2,'y':-2}]
+		edge1 = [nodes[1], {'x': 2, 'y': -2}]
 		# 1 == tangent and hull parallel of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [nodes[0], {'x':2,'y':3}]
+		edge1 = [nodes[0], {'x': 2, 'y': 3}]
 		# 1 == tangent and hull at the left of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [nodes[1], {'x':1,'y':0}]
+		edge1 = [nodes[1], {'x': 1, 'y': 0}]
 		# 1 == tangent and hull at the left of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [{'x':1,'y':3}, nodes[1]]
+		edge1 = [{'x': 1, 'y': 3}, nodes[1]]
 		# 1 == tangent and hull at the left of the edge
 		self.assertEquals(h.isTangent(edge1), 1)
 
-		edge1 = [nodes[1], {'x':3,'y':2}]
+		edge1 = [nodes[1], {'x': 3, 'y': 2}]
 		# -1 == tangent and hull at the right of the edge
 		self.assertEquals(h.isTangent(edge1), -1)
 
-		edge1 = [nodes[0], {'x':0,'y':0}]
+		edge1 = [nodes[0], {'x': 0, 'y': 0}]
 		# -1 == tangent and hull at the right of the edge
 		self.assertEquals(h.isTangent(edge1), -1)
 
@@ -478,7 +478,7 @@ class graphTests(tests.common.common):
 		g.generateEdges()
 		expected = {
 			'{"x":1,"y":1}': [OrderedDict([('x', 0), ('y', 4)])],
-			'{"x":0,"y":4}': [OrderedDict([('x', 1), ('y',1)])]
+			'{"x":0,"y":4}': [OrderedDict([('x', 1), ('y', 1)])]
 		}
 		self.assertEquals(g.edges, expected)
 
@@ -499,9 +499,15 @@ class graphTests(tests.common.common):
 
 		g.generateEdges()
 		expected = {
-			'{"x":1,"y":1}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 3), ('y', 2)])],
-			'{"x":3,"y":2}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 1), ('y', 1)])],
-			'{"x":0,"y":4}': [OrderedDict([('x', 1), ('y', 1)]), OrderedDict([('x', 3), ('y', 2)])]
+			'{"x":1,"y":1}': [
+				OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 3), ('y', 2)])
+			],
+			'{"x":3,"y":2}': [
+				OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 1), ('y', 1)])
+			],
+			'{"x":0,"y":4}': [
+				OrderedDict([('x', 1), ('y', 1)]), OrderedDict([('x', 3), ('y', 2)])
+			]
 		}
 		self.assertEquals(g.edges, expected)
 
@@ -549,9 +555,18 @@ class graphTests(tests.common.common):
 
 		g.generateEdges()
 		expected = {
-			'{"x":0,"y":4}': [OrderedDict([('x', 1), ('y', 1)]), OrderedDict([('x', 3), ('y', 0)])],
-			'{"x":1,"y":1}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 3), ('y', 0)])],
-			'{"x":3,"y":0}': [OrderedDict([('x', 0), ('y', 4)]), OrderedDict([('x', 1), ('y', 1)])],
+			'{"x":0,"y":4}': [
+				OrderedDict([('x', 1), ('y', 1)]),
+				OrderedDict([('x', 3), ('y', 0)])
+			],
+			'{"x":1,"y":1}': [
+				OrderedDict([('x', 0), ('y', 4)]),
+				OrderedDict([('x', 3), ('y', 0)])
+			],
+			'{"x":3,"y":0}': [
+				OrderedDict([('x', 0), ('y', 4)]),
+				OrderedDict([('x', 1), ('y', 1)])
+			],
 			'{"x":3,"y":2}': [OrderedDict([('x', 4), ('y', 3)])],
 			'{"x":4,"y":3}': [OrderedDict([('x', 3), ('y', 2)])]
 		}

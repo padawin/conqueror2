@@ -98,11 +98,12 @@ class game:
 			self.graph.getNode(node['x'], node['y'])['owned_by'] = playerIndex
 			return True
 
-	def notifyPlayers(self, emitter = None, message = None):
+	def notifyPlayers(self, emitter=None, message=None):
 		players = self.players
 		for playerId in players.keys():
 			if emitter is None or players[playerId].id is not emitter.id:
 				players[playerId].write_message(message)
+
 
 class collection(dict):
 	def __init__(self):
