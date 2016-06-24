@@ -7,7 +7,8 @@ function (B, canvas, camera, screenSize, map) {
 	 * Main module of the game, manage the game loop.
 	 */
 
-	var debug = false,
+	var WSURL = window.location.host,
+		debug = false,
 		m,
 		timePreviousFrame,
 		maxFPS = 60,
@@ -174,7 +175,7 @@ function (B, canvas, camera, screenSize, map) {
 	 */
 	function startGame () {
 		console.log('start game');
-		ws = new WebSocket("ws://localhost:8888/ws");
+		ws = new WebSocket("ws://" + WSURL + "/ws");
 		ws.onopen = function(evt) {
 			ws.send(JSON.stringify({messageType: 'CLIENT_JOINED'}));
 		};
