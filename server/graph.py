@@ -174,6 +174,24 @@ class convexHull(dict):
 				self[nodeKey][backIndex] = None
 			nodesDeleted = True
 
+	def _joinNodesClockwise(self, fromNode, toNode):
+		fromKey = convexHull.getNodeKey(fromNode)
+		toKey = convexHull.getNodeKey(toNode)
+
+		if len(self[fromKey]) == 2:
+			if self[fromKey][0] is not None and self[fromKey][0] is not toNode:
+				raise exception("This node already has a clockwise neighbour")
+			self[fromKey][0] = toNode
+		else:
+			self[fromKey].insert(0, toNode)
+
+		if len(self[toKey]) == 2:
+			if self[toKey][1] is not None and self[toKey][1] is not fromNode:
+				raise exception("This node already has a counter clockwise neighbour")
+			self[toKey][1] = fromNode
+		else:
+			self[toKey].append(fromNode)
+
 	def isLowerTangent(self, edge):
 		'''
 		Means the hull is at the left of the edge

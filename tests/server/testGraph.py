@@ -510,6 +510,172 @@ class graphTests(tests.common.common):
 		expected['0-4'] = [nodes[0], nodes[5]]
 		self.assertEquals(h, expected)
 
+	def test_fail_joinNodesClockwise_from_on_full_node(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+
+		h['0-2'] = [nodes[1], nodes[6]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['3-0'] = [nodes[3], nodes[1]]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [nodes[6], nodes[4]]
+		h['0-4'] = [nodes[0], nodes[5]]
+
+		with self.assertRaises(graph.exception):
+			h._joinNodesClockwise(nodes[3], nodes[5])
+
+	def test_fail_joinNodesClockwise_to_on_full_node(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+
+		h['0-2'] = [nodes[1], nodes[6]]
+		h['1-1'] = [nodes[2], nodes[0]]
+		h['3-0'] = [None, nodes[1]]
+		h['4-2'] = [nodes[4], None]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [nodes[6], nodes[4]]
+		h['0-4'] = [nodes[0], nodes[5]]
+
+		with self.assertRaises(graph.exception):
+			h._joinNodesClockwise(nodes[2], nodes[4])
+
+	def test_joinNodesClockwise_from_on_two_nodes_hull(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+		#  012345
+		# 0...2..
+		# 1.1....
+		# 20...3.
+		# 3......
+		# 46..4..
+		# 5..5...
+
+		# The 2nodes hull is the [0, 6]
+		# [1, 2, 3, 4, 5] is the second hull
+		h['0-2'] = [nodes[6]]
+		h['1-1'] = [nodes[2], None]
+		h['3-0'] = [nodes[3], nodes[1]]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [None, nodes[4]]
+		h['0-4'] = [nodes[0]]
+
+		h._joinNodesClockwise(nodes[0], nodes[1])
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[1], nodes[6]]
+		expected['1-1'] = [nodes[2], nodes[0]]
+		expected['3-0'] = [nodes[3], nodes[1]]
+		expected['4-2'] = [nodes[4], nodes[2]]
+		expected['3-4'] = [nodes[5], nodes[3]]
+		expected['2-5'] = [None, nodes[4]]
+		expected['0-4'] = [nodes[0]]
+		self.assertEquals(h, expected)
+
+	def test_joinNodesClockwise_to_on_two_nodes_hull(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+		#  012345
+		# 0...2..
+		# 1.1....
+		# 20...3.
+		# 3......
+		# 46..4..
+		# 5..5...
+
+		# The 2nodes hull is the [0, 6]
+		# [1, 2, 3, 4, 5] is the second hull
+		h['0-2'] = [nodes[6]]
+		h['1-1'] = [nodes[2], None]
+		h['3-0'] = [nodes[3], nodes[1]]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [None, nodes[4]]
+		h['0-4'] = [nodes[0]]
+
+		h._joinNodesClockwise(nodes[5], nodes[6])
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[6]]
+		expected['1-1'] = [nodes[2], None]
+		expected['3-0'] = [nodes[3], nodes[1]]
+		expected['4-2'] = [nodes[4], nodes[2]]
+		expected['3-4'] = [nodes[5], nodes[3]]
+		expected['2-5'] = [nodes[6], nodes[4]]
+		expected['0-4'] = [nodes[0], nodes[5]]
+		self.assertEquals(h, expected)
+
+	def test_joinNodesClockwise_join_hulls(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1},
+			{'x': 3, 'y': 0},
+			{'x': 4, 'y': 2},
+			{'x': 3, 'y': 4},
+			{'x': 2, 'y': 5},
+			{'x': 0, 'y': 4}
+		]
+		#  012345
+		# 0...2..
+		# 1.1....
+		# 20...3.
+		# 3......
+		# 46..4..
+		# 5..5...
+
+		# The 2nodes hull is the [0, 6]
+		# [1, 2, 3, 4, 5] is the second hull
+		h['0-2'] = [nodes[1], nodes[6]]
+		h['1-1'] = [None, nodes[0]]
+		h['3-0'] = [nodes[3], None]
+		h['4-2'] = [nodes[4], nodes[2]]
+		h['3-4'] = [nodes[5], nodes[3]]
+		h['2-5'] = [None, nodes[4]]
+		h['0-4'] = [nodes[0], None]
+
+		h._joinNodesClockwise(nodes[5], nodes[6])
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[1], nodes[6]]
+		expected['1-1'] = [None, nodes[0]]
+		expected['3-0'] = [nodes[3], None]
+		expected['4-2'] = [nodes[4], nodes[2]]
+		expected['3-4'] = [nodes[5], nodes[3]]
+		expected['2-5'] = [nodes[6], nodes[4]]
+		expected['0-4'] = [nodes[0], nodes[5]]
+		self.assertEquals(h, expected)
+
 	# functional tests
 
 	def test_generate_hull_2_nodes(self):
