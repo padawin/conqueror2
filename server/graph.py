@@ -153,6 +153,9 @@ class convexHull(dict):
 		It breaks a hull by removing the links between two points.
 		Makes the Hull unstable and breaks its integrity
 		'''
+		if len(self.keys()) == 2 and fromNode is not toNode:
+			return
+
 		nodesDeleted = False
 		nodeKey = convexHull.getNodeKey(fromNode)
 		toNodeKey = convexHull.getNodeKey(toNode)

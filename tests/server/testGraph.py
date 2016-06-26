@@ -443,6 +443,28 @@ class graphTests(tests.common.common):
 		expected['0-2'] = [None]
 		self.assertEquals(h, expected)
 
+	def test_clean_line_hull_one_node_to_from_different_counter_clockwise(self):
+		h = graph.convexHull()
+		nodes = [
+			{'x': 0, 'y': 2},
+			{'x': 1, 'y': 1}
+		]
+		h['0-2'] = [nodes[1]]
+		h['1-1'] = [nodes[0]]
+
+		expected = graph.convexHull()
+		expected['0-2'] = [nodes[1]]
+		expected['1-1'] = [nodes[0]]
+
+		h._clean(nodes[1], nodes[0], False)
+		self.assertEquals(h, expected)
+		h._clean(nodes[1], nodes[0], True)
+		self.assertEquals(h, expected)
+		h._clean(nodes[0], nodes[1], False)
+		self.assertEquals(h, expected)
+		h._clean(nodes[0], nodes[1], True)
+		self.assertEquals(h, expected)
+
 	def test_clean_hull_one_node_clockwise(self):
 		h = graph.convexHull()
 		nodes = [
