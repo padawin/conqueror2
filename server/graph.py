@@ -45,8 +45,14 @@ class graph:
 			leftHull2 = start + int((end - start) / 2) + 1
 			hull1 = self.generateEdges(start, rightHull1)
 			hull2 = self.generateEdges(leftHull2, end)
-			# @TODO merge the 2 hulls
-			hull = dict()
+			(hull, topTangent, bottomTangent) = convexHull.merge(
+				hull1, hull2,
+				self.nodes[rightHull1],
+				self.nodes[leftHull2]
+			)
+
+			self.edges.addEdge(topTangent[0], topTangent[1])
+			self.edges.addEdge(bottomTangent[0], bottomTangent[1])
 		elif end - start == 2:
 			node1 = self.nodes[start]
 			node2 = self.nodes[start + 1]
@@ -113,6 +119,50 @@ class convexHull(dict):
 	@staticmethod
 	def getNodeKey(node):
 		return '{}-{}'.format(node['x'], node['y'])
+
+	@staticmethod
+	def merge(hull1, hull2, rightMostHull1, leftMostHull2):
+		topTangent = convexHull.findTangent(
+			hull1, hull2,
+			rightMostHull1, leftMostHull2,
+			True
+		)
+		bottomTangent = convexHull.findTangent(
+			hull1, hull2,
+			rightMostHull1, leftMostHull2,
+			False
+		)
+
+		# remove edges contained in the two tangents
+		# loop clockwise from topTangent[0] to bottomTangent[0]
+		hull1._clean(
+			fromNode=topTangent[0],
+			toNode=bottomTangent[0],
+			clockwise=True
+		)
+		# loop counter clockwise from topTangent[1] to bottomTangent[1]
+		hull2._clean(
+			fromNode=topTangent[1],
+			toNode=bottomTangent[1],
+			clockwise=False
+		)
+
+		# merge the two hulls
+		hull = convexHull(hull1.copy())
+		hull.update(hull2)
+
+		# add topTangent and bottomTangent to hull
+		hull._joinNodesClockwise(topTangent[0], topTangent[1])
+		hull._joinNodesClockwise(bottomTangent[1], bottomTangent[0])
+
+		# _clean orphan nodes
+		hull = convexHull({
+			key: hull[key]
+			for key in hull
+			if len(hull[key]) == 2
+		})
+
+		return (hull, topTangent, bottomTangent)
 
 	@staticmethod
 	def findTangent(hull1, hull2, rightMostHull1, leftMostHull2, isUpperTangent):

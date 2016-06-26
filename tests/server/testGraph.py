@@ -700,6 +700,34 @@ class graphTests(tests.common.common):
 
 	# functional tests
 
+	def test_merge_hulls_4_nodes_with_one_inside(self):
+		h1 = graph.convexHull()
+		h2 = graph.convexHull()
+		nodes1 = [
+			{'x': 0, 'y': 4},
+			{'x': 2, 'y': 0}
+		]
+		nodes2 = [
+			{'x': 2, 'y': 2},
+			{'x': 3, 'y': 3}
+		]
+		h1['0-4'] = [nodes1[1]]
+		h1['2-0'] = [nodes1[0]]
+		h2['2-2'] = [nodes2[1]]
+		h2['3-3'] = [nodes2[0]]
+
+		(hull, upperTangent, lowerTangent) = graph.convexHull.merge(
+			h1, h2, nodes1[1], nodes2[0]
+		)
+		expected = graph.convexHull()
+		expected['0-4'] = [nodes1[1], nodes2[1]]
+		expected['2-0'] = [nodes2[1], nodes1[0]]
+		expected['3-3'] = [nodes1[0], nodes1[1]]
+
+		self.assertEquals(hull, expected)
+		self.assertEquals(upperTangent, [nodes1[1], nodes2[1]])
+		self.assertEquals(lowerTangent, [nodes1[0], nodes2[1]])
+
 	def test_generate_hull_2_nodes(self):
 		h = graph.convexHull()
 		nodes = [
