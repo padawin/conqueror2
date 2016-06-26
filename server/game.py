@@ -45,7 +45,7 @@ class game:
 		return len(self.players) > 0
 
 	def initialisePlayers(self):
-		self.playerIds = self.players.keys()
+		self.playerIds = list(self.players.keys())
 
 		# Define the start position of each player
 		nodes = list(self.graph.nodes)
@@ -118,6 +118,6 @@ class collection(dict):
 	def getGame(self, gameId=None):
 		# return the first available
 		if gameId is None:
-			return self[self.keys()[0]]
+			return self[list(self.keys())[0]]
 		else:
 			return self[gameId]
