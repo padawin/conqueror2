@@ -16,12 +16,14 @@ clients = dict()
 openGames = game.collection()
 fullGames = game.collection()
 
+
 class IndexHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
 	def get(self, url):
 		if url == '':
 			url = 'index.html'
 		self.render("../web/%s" % url)
+
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self, *args):
@@ -79,7 +81,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif message['messageType'] == 'CAPTURED_NODE':
 			isCurrentPlayer = self.game.currentPlayer == message['playerId']
 			hasGoodPlayerIndex = self.game.playerIds[message['playerId']] == self.id
-			if isCurrentPlayer and hasGoodPlayerIndex and self.game.conquerNode(message['node'], message['playerId']):
+			if isCurrentPlayer and hasGoodPlayerIndex and self.game.conquerNode(
+				message['node'], message['playerId']
+			):
 				self.game.notifyPlayers(
 					message={
 						'type': 'GAME_MAP',
